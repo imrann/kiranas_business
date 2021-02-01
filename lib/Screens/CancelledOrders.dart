@@ -266,6 +266,13 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                       fontSize: 12)),
             ],
           ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            // Text("ORDER CANCELLED ON :" + orderListState.orderData.oUpdateDate,
+            //     style: TextStyle(
+            //         color: Colors.grey,
+            //         fontWeight: FontWeight.normal,
+            //         fontSize: 12)),
+          ])
         ],
       ),
     );

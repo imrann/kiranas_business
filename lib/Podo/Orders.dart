@@ -7,6 +7,7 @@ class Orders {
   String oUserID;
   String oUserName;
   String oUserPhone;
+  String oUpdateDate;
   OUserAddress oUserAddress;
   List<OProducts> oProducts;
 
@@ -19,6 +20,7 @@ class Orders {
       this.oUserID,
       this.oUserName,
       this.oUserPhone,
+      this.oUpdateDate,
       this.oUserAddress,
       this.oProducts});
 
@@ -39,6 +41,7 @@ class Orders {
       oUserID: parsedJson['oUserID'],
       oUserName: parsedJson['oUserName'],
       oUserPhone: parsedJson['oUserPhone'],
+      oUpdateDate: parsedJson['oUpdateDate'],
       oUserAddress: parsedJson['oUserAddress'] != null
           ? new OUserAddress.fromJson(parsedJson['oUserAddress'])
           : null,
@@ -58,6 +61,8 @@ class Orders {
     data['oUserID'] = this.oUserID;
     data['oUserName'] = this.oUserName;
     data['oUserPhone'] = this.oUserPhone;
+    data['oUpdateDate'] = this.oUpdateDate;
+
     if (this.oUserAddress != null) {
       data['oUserAddress'] = this.oUserAddress.toJson();
     }

@@ -91,7 +91,7 @@ class OrderService {
   Future<dynamic> updateOrderStatus(
       {String orderID, String status, String est}) async {
     final String updateOrderStatusApi =
-        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/status/updateOrderStatus/$orderID/$status";
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/status/updateOrderStatus/$orderID/$status/$est";
 
     Map<String, String> headers = {
       'Content-type': 'application/json',
