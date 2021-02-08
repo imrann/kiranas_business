@@ -9,6 +9,32 @@ import 'package:kirnas_business/Podo/Product.dart';
 import 'package:http/http.dart' as http;
 
 class ProductService {
+  Future<dynamic> getProductByID(String productID) async {
+    final String getProductByIDApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/products/getProductByID/$productID";
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+    List<Product> posts = new List<Product>();
+    try {
+      http.Response res = await http.get(getProductByIDApi, headers: headers);
+      if (res.statusCode == 200 &&
+          jsonDecode(res.body)['message']
+              .toString()
+              .contains("getProductByID")) {
+        var data = jsonDecode(res.body)['result'] as List;
+
+        posts = data.map((posts) => Product.fromJson(posts)).toList();
+        return posts;
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
+
   Future<dynamic> getProductList() async {
     final String getAllProductApi =
         "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/products/getAllProducts";
@@ -120,6 +146,75 @@ class ProductService {
         posts = data.map((posts) => Product.fromJson(posts)).toList();
         print(posts);
         return posts;
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
+
+  Future<dynamic> disContinueProduct(
+      {String productID, bool discontinueAction}) async {
+    final String disContinueProductApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/products/deleteProduct/$productID";
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+
+    var body = json.encode({
+      "discontinue": discontinueAction,
+    });
+    try {
+      http.Response res =
+          await http.put(disContinueProductApi, headers: headers, body: body);
+      if (res.statusCode == 200 &&
+          jsonDecode(res.body)['message']
+              .toString()
+              .contains("deleteProduct")) {
+        return "true";
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
+
+  Future<dynamic> createProduct(String body) async {
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+    final String createProductApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/products/createProduct";
+
+    try {
+      http.Response res =
+          await http.post(createProductApi, headers: headers, body: body);
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return "true";
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
+
+  Future<dynamic> updateProduct(String body, String productID) async {
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+    final String updateProductApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/products/updateProduct/$productID";
+
+    try {
+      http.Response res =
+          await http.put(updateProductApi, headers: headers, body: body);
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return "true";
       } else {
         CustomException().returnResponse(response: res, connection: true);
       }

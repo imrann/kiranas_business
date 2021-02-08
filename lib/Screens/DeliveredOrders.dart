@@ -29,11 +29,7 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: getOrders(),
-      ),
-    );
+    return getOrders();
   }
 
   Widget getOrders() {
@@ -56,169 +52,156 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                       fontSize: 15)),
             );
           } else {
-            return Scrollbar(child:
-                Consumer<OrdersListState>(builder: (context, orders, child) {
+            return Consumer<OrdersListState>(builder: (context, orders, child) {
               var orderListState = orders.getDeliveredOrdersListState();
               if (orderListState.length > 0) {
-                return Column(
-                  children: [
-                    ListView.builder(
-                        shrinkWrap: true,
+                return ListView.builder(
+                    shrinkWrap: true,
 
-                        //controller: _scrollController,
+                    //controller: _scrollController,
 
-                        itemCount: orderListState.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.fromLTRB(3, 10, 3, 0),
-                                child: Card(
-                                  elevation: 1.0,
-                                  child: ExpansionTile(
-                                    //tilePadding: EdgeInsets.all(5),
+                    itemCount: orderListState.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.fromLTRB(3, 10, 3, 0),
+                            child: Card(
+                              elevation: 1.0,
+                              child: ExpansionTile(
+                                //tilePadding: EdgeInsets.all(5),
 
-                                    title: Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 7, 0, 7),
-                                      child: Row(
-                                        children: [
-                                          Text("Order ID: ",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15)),
-                                          Text(
-                                              orderListState[
-                                                      (orderListState.length -
-                                                              1) -
-                                                          index]
-                                                  .orderData
-                                                  .orderID,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize: 15))
-                                        ],
-                                      ),
-                                    ),
-                                    subtitle: Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 5, 0, 5),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                    "Tracking status       " +
-                                                        orderListState[
-                                                                (orderListState
-                                                                            .length -
-                                                                        1) -
-                                                                    index]
-                                                            .orderData
-                                                            .oTrackingStatus
-                                                            .toString(),
-                                                    style: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        fontSize: 12)),
-                                              ],
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                  "Dop                           " +
-                                                      orderListState[
-                                                              (orderListState
-                                                                          .length -
-                                                                      1) -
-                                                                  index]
-                                                          .orderData
-                                                          .oDop
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 12)),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 5, 0, 5),
-                                            child: Row(
-                                              children: [
-                                                Text("Est delivery time    ",
-                                                    style: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        fontSize: 12)),
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(2)),
-                                                  child: Container(
-                                                    color: Colors.pink[900],
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              2.0),
-                                                      child: Text("n/a",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                              fontSize: 12)),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    children: <Widget>[
-                                      Container(
-                                          //   height: 100,
-                                          color: Colors.grey[100],
-                                          child: inventoryCard1(orderListState[
-                                              (orderListState.length - 1) -
-                                                  index])),
+                                title: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 7, 0, 7),
+                                  child: Row(
+                                    children: [
+                                      Text("Order ID: ",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15)),
+                                      Text(
+                                          orderListState[
+                                                  (orderListState.length - 1) -
+                                                      index]
+                                              .orderData
+                                              .orderID,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 15))
                                     ],
                                   ),
                                 ),
+                                subtitle: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 5, 0, 5),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                                "Tracking status       " +
+                                                    orderListState[
+                                                            (orderListState
+                                                                        .length -
+                                                                    1) -
+                                                                index]
+                                                        .orderData
+                                                        .oTrackingStatus
+                                                        .toString(),
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 12)),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                              "Dop                           " +
+                                                  orderListState[(orderListState
+                                                                  .length -
+                                                              1) -
+                                                          index]
+                                                      .orderData
+                                                      .oDop
+                                                      .toString(),
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 12)),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 5, 0, 5),
+                                        child: Row(
+                                          children: [
+                                            Text("Est delivery time    ",
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 12)),
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(2)),
+                                              child: Container(
+                                                color: Colors.pink[900],
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(2.0),
+                                                  child: Text("n/a",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                          fontSize: 12)),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                children: <Widget>[
+                                  Container(
+                                      //   height: 100,
+                                      color: Colors.grey[100],
+                                      child: inventoryCard1(orderListState[
+                                          (orderListState.length - 1) -
+                                              index])),
+                                ],
                               ),
-                              // Divider(
-                              //   thickness: 0,
-                              //   indent: 0,
-                              //   endIndent: 0,
-                              // )
-                            ],
-                          );
-                        }),
-                  ],
-                );
+                            ),
+                          ),
+                          // Divider(
+                          //   thickness: 0,
+                          //   indent: 0,
+                          //   endIndent: 0,
+                          // )
+                        ],
+                      );
+                    });
               } else {
                 return Center(
                   child: Text("No Delivered Orders!!"),
                 );
               }
-            }));
+            });
           }
         } else {
           return FancyLoader(

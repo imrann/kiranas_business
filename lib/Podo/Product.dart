@@ -39,6 +39,7 @@ class ProductData {
   String createDate;
   String productMrp;
   String productCp;
+  String productImageName;
 
   ProductData(
       {this.productUnit,
@@ -55,7 +56,8 @@ class ProductData {
       this.productQty,
       this.createDate,
       this.productMrp,
-      this.productCp});
+      this.productCp,
+      this.productImageName});
 
   factory ProductData.fromJson(Map<String, dynamic> parsedJson) {
     return new ProductData(
@@ -74,6 +76,7 @@ class ProductData {
       createDate: parsedJson['createDate'],
       productMrp: parsedJson['productMrp'],
       productCp: parsedJson['productCp'],
+      productImageName: parsedJson['productImageName'],
     );
   }
 
@@ -94,6 +97,8 @@ class ProductData {
     data['createDate'] = this.createDate;
     data['productMrp'] = this.productMrp;
     data['productCp'] = this.productCp;
+    data['productImageName'] = this.productImageName;
+
     return data;
   }
 }

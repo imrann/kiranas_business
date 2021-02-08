@@ -11,4 +11,13 @@ class ProductListState extends ChangeNotifier {
     this.productListState = productListState;
     notifyListeners();
   }
+
+  List<Product> productState = [];
+
+  List<Product> getProductState() => productState;
+
+  setProductState(List<Product> productState) {
+    this.productState = productState;
+    notifyListeners();
+  }
 }

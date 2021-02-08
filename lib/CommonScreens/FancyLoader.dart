@@ -51,35 +51,57 @@ class FancyLoader extends StatelessWidget {
   }
 
   Widget getLogoLoader() {
-    return Center(
-      child: Text(
-        'kirnas_business',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.grey,
-            fontSize: 50.0,
-            fontWeight: FontWeight.bold,
-            wordSpacing: 2,
-            fontStyle: FontStyle.italic),
+    return Container(
+      child: Center(
+        child: Text(
+          'kirnas_business',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.grey,
+              fontSize: 50.0,
+              fontWeight: FontWeight.bold,
+              wordSpacing: 2,
+              fontStyle: FontStyle.italic),
+        ),
       ),
     );
   }
 
   Widget getSingleLineLoader() {
-    return Center(
-      child: Container(
-        color: Colors.grey[200],
-        height: 100,
-        width: 300,
-      ),
+    return Container(
+      color: Colors.green[500],
+      height: 0,
+      width: 200,
     );
   }
 
   Widget getMultiLineLoader(int lines) {
-    return Container(
-      color: Colors.grey[200],
-      height: lines.toDouble() * 50,
-      width: 300,
+    return ListView.builder(
+      itemCount: lines,
+      itemBuilder: (context, index) {
+        return Column(
+          children: <Widget>[
+            ListTile(
+              title: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                child: Container(
+                  color: Colors.grey[200],
+                  height: 15,
+                  width: 100,
+                ),
+              ),
+              subtitle: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                child: Container(
+                  color: Colors.grey[200],
+                  height: 15,
+                  width: 100,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

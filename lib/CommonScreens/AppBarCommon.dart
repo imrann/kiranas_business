@@ -74,7 +74,8 @@ class _AppBarCommonState extends State<AppBarCommon> {
                 widget.notificationCount),
       ],
       bottomOpacity: 1,
-      backgroundColor: Colors.white,
+      backgroundColor:
+          widget.searchOwner == "pDetails" ? Colors.transparent : Colors.white,
       brightness: Brightness.light,
     );
   }

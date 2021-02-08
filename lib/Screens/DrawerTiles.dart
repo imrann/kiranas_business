@@ -1,3 +1,5 @@
+import 'package:kirnas_business/CommonScreens/SlideRightRoute.dart';
+import 'package:kirnas_business/CustomWidgets/AddProduct.dart';
 import 'package:kirnas_business/Policies/Policies.dart';
 import 'package:kirnas_business/Screens/Login.dart';
 import 'package:kirnas_business/SharedPref/UserDetailsSP.dart';
@@ -165,6 +167,16 @@ class DrawerTiles extends StatelessWidget {
           } else if (title == 'Cancellation/Refund Policies') {
             Navigator.of(context).pop();
             _showPolicies("Refund", context);
+          } else if (title == 'Add Product') {
+            Navigator.of(context).pop();
+            Navigator.push(
+                context,
+                SlideRightRoute(
+                    widget: AddProduct(
+                      isUpdateProduct: false,
+                      prouctDetail: null,
+                    ),
+                    slideAction: "vertical"));
           }
         });
   }

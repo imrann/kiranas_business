@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
 import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
 import 'package:kirnas_business/CommonScreens/SlideRightRoute.dart';
@@ -12,14 +11,9 @@ import 'package:kirnas_business/Screens/OpenOrders.dart';
 import 'package:kirnas_business/Screens/Transactions.dart';
 import 'package:kirnas_business/Screens/Orders.dart';
 import 'package:kirnas_business/Screens/ProductDetails.dart';
-import 'package:kirnas_business/SharedPref/UserDetailsSP.dart';
 import 'package:kirnas_business/CommonScreens/AppBarCommon.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
 import 'package:kirnas_business/StateManager/ProductListState.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -222,7 +216,7 @@ class _HomeState extends State<Home> {
                             context,
                             SlideRightRoute(
                                 widget: ProductDetails(
-                                  productDetails: productList[index],
+                                  productDetailsL: productList[index],
                                   heroIndex: "productDetails$index",
                                 ),
                                 slideAction: "horizontal"));
@@ -237,108 +231,120 @@ class _HomeState extends State<Home> {
                         elevation: 0,
                         child: ClipRRect(
                           borderRadius: BorderRadius.vertical(
-                              bottom: Radius.circular(10)),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.center,
-                                    colors: [Colors.pink[100], Colors.white])),
-                            child: new GridTile(
-                              child: Hero(
-                                tag: "productDetails$index",
-                                child: FadeInImage.memoryNetwork(
-                                  placeholder: kTransparentImage,
-                                  image:
-                                      'http://clipart-library.com/images_k/food-transparent-background/food-transparent-background-7.png',
+                              bottom: Radius.circular(10),
+                              top: Radius.circular(10)),
+                          child: ColorFiltered(
+                            colorFilter: ColorFilter.mode(
+                                productList[index].productData.discontinue
+                                    ? Colors.grey[500]
+                                    : Colors.white,
+                                BlendMode.modulate),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.center,
+                                      colors: [
+                                    Colors.pink[100],
+                                    Colors.white
+                                  ])),
+                              child: new GridTile(
+                                child: ClipOval(
+                                  clipper: MyClipper(),
+                                  child: FadeInImage.memoryNetwork(
+                                      placeholder: kTransparentImage,
+                                      image: productList[index]
+                                          .productData
+                                          .productUrl),
                                 ),
-                              ),
-                              header: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Text(
-                                      productList[index]
-                                              .productData
-                                              .productNetWeight +
-                                          "  " +
-                                          productList[index]
-                                              .productData
-                                              .productUnit,
-                                      style: TextStyle(
-                                          fontSize: 10, color: Colors.white),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              footer: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: 150,
-                                            child: Text(
-                                              productList[index]
-                                                  .productData
-                                                  .productName,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold),
-                                              overflow: TextOverflow.fade,
-                                              softWrap: false,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          SizedBox(width: 12),
-                                          Text(
-                                            "Rs. " +
-                                                productList[index]
-                                                    .productData
-                                                    .productMrp,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                                fontSize: 12),
-                                          ),
-                                          SizedBox(width: 12),
-                                          Text(
-                                            productList[index]
-                                                    .productData
-                                                    .productOffPercentage +
-                                                "%" +
-                                                " off",
-                                            style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 12,
-                                                fontStyle: FontStyle.italic),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
+                                header: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Text(
+                                        productList[index]
+                                                .productData
+                                                .productNetWeight +
+                                            "  " +
                                             productList[index]
                                                 .productData
-                                                .productBrand,
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          )
-                                        ],
+                                                .productUnit,
+                                        style: TextStyle(
+                                            fontSize: 10, color: Colors.grey),
                                       ),
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
-                              ), //just for testing, will fill with image later
+                                footer: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 150,
+                                              child: Text(
+                                                productList[index]
+                                                    .productData
+                                                    .productName,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                overflow: TextOverflow.fade,
+                                                softWrap: false,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 12),
+                                            Text(
+                                              "Rs. " +
+                                                  productList[index]
+                                                      .productData
+                                                      .productMrp,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                  fontSize: 12),
+                                            ),
+                                            SizedBox(width: 12),
+                                            Text(
+                                              productList[index]
+                                                      .productData
+                                                      .productOffPercentage +
+                                                  "%" +
+                                                  " off",
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 12,
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              productList[index]
+                                                  .productData
+                                                  .productBrand,
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ), //just for testing, will fill with image later
+                              ),
                             ),
                           ),
                         ),
@@ -443,5 +449,17 @@ class _HomeState extends State<Home> {
         ),
       );
     }
+  }
+}
+
+class MyClipper extends CustomClipper<Rect> {
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTWH(10, 50, 170, 170);
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
+    return false;
   }
 }

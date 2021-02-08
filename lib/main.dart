@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kirnas_business/Screens/Orders.dart';
 import 'package:kirnas_business/StateManager/FilterListState.dart';
+import 'package:kirnas_business/StateManager/MiscellaneousState.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
 import 'package:kirnas_business/StateManager/ProductListState.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => ProductListState()),
           ChangeNotifierProvider(create: (context) => OrdersListState()),
           ChangeNotifierProvider(create: (context) => FilterListState()),
+          ChangeNotifierProvider(create: (context) => MiscellaneousState()),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
