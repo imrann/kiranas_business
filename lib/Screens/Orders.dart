@@ -32,9 +32,9 @@ class _OrdersState extends State<Orders> {
         ),
         body: TabBarView(
           children: [
-            OpenOrders(),
-            DeliveredOrders(),
-            CancelledOrders()
+            new OpenOrders(),
+            new DeliveredOrders(),
+            new CancelledOrders()
             // DeliveredOrders(),
             // CancelledOrders()
           ],

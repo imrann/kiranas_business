@@ -250,10 +250,17 @@ class _ProductDetailsState extends State<ProductDetails> {
                   },
                   color: Colors.pink[900],
                   child: productList[0].productData.discontinue
-                      ? Icon(
-                          Icons.restore_from_trash_rounded,
-                          size: 25,
-                          color: Colors.white,
+                      ? Row(
+                          children: [
+                            Text("RESTORE",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15)),
+                            Icon(
+                              Icons.restore_from_trash_rounded,
+                              size: 25,
+                              color: Colors.white,
+                            )
+                          ],
                         )
                       : Icon(
                           Icons.delete_outline_rounded,

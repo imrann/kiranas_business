@@ -6,6 +6,7 @@ import 'package:kirnas_business/StateManager/FilterListState.dart';
 import 'package:kirnas_business/StateManager/MiscellaneousState.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
 import 'package:kirnas_business/StateManager/ProductListState.dart';
+import 'package:kirnas_business/StateManager/TransactionState.dart';
 import 'package:provider/provider.dart';
 import 'package:kirnas_business/SharedPref/UserDetailsSP.dart';
 import 'package:kirnas_business/Screens/Home.dart';
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => OrdersListState()),
           ChangeNotifierProvider(create: (context) => FilterListState()),
           ChangeNotifierProvider(create: (context) => MiscellaneousState()),
+          ChangeNotifierProvider(create: (context) => TransactionState()),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',

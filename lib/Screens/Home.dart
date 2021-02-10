@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
 import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
 import 'package:kirnas_business/CommonScreens/SlideRightRoute.dart';
@@ -8,7 +7,7 @@ import 'package:kirnas_business/Controllers/OrderController.dart';
 import 'package:kirnas_business/Controllers/ProductController.dart';
 import 'package:kirnas_business/Podo/Product.dart';
 import 'package:kirnas_business/Screens/OpenOrders.dart';
-import 'package:kirnas_business/Screens/Transactions.dart';
+import 'package:kirnas_business/Screens/TransactionScreen.dart';
 import 'package:kirnas_business/Screens/Orders.dart';
 import 'package:kirnas_business/Screens/ProductDetails.dart';
 import 'package:kirnas_business/CommonScreens/AppBarCommon.dart';
@@ -43,6 +42,8 @@ class _HomeState extends State<Home> {
   String text = "Home";
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   ProgressDialog progressDialog;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -89,13 +90,19 @@ class _HomeState extends State<Home> {
             content: Text('You are going to exit the application!!'),
             actions: <Widget>[
               FlatButton(
-                child: Text('NO'),
+                child: Text(
+                  'NO',
+                  style: TextStyle(color: Colors.pink[900]),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
               ),
               FlatButton(
-                child: Text('YES'),
+                child: Text(
+                  'YES',
+                  style: TextStyle(color: Colors.pink[900]),
+                ),
                 onPressed: () {
                   exit(0);
                 },
@@ -137,8 +144,10 @@ class _HomeState extends State<Home> {
       ),
       body: WillPopScope(
           onWillPop: _onBackPressed,
-          child: Center(
-            child: productListUI(),
+          child: Container(
+            child: Center(
+              child: productListUI(),
+            ),
           )),
       bottomNavigationBar: BottomAppBar(
         child: Container(
@@ -200,162 +209,173 @@ class _HomeState extends State<Home> {
                       fontSize: 15)),
             );
           } else {
-            return Scrollbar(child:
-                Consumer<ProductListState>(builder: (context, product, child) {
-              List<Product> productList = product.getProductListState();
-              if (productList.length != 0) {
-                return GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.7),
-                  itemCount: productList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      splashColor: Colors.white,
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            SlideRightRoute(
-                                widget: ProductDetails(
-                                  productDetailsL: productList[index],
-                                  heroIndex: "productDetails$index",
-                                ),
-                                slideAction: "horizontal"));
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => ProductDetails(
-                        //               productDetails: productList[index],
-                        //             )));
-                      },
-                      child: new Card(
-                        elevation: 0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.vertical(
-                              bottom: Radius.circular(10),
-                              top: Radius.circular(10)),
-                          child: ColorFiltered(
-                            colorFilter: ColorFilter.mode(
-                                productList[index].productData.discontinue
-                                    ? Colors.grey[500]
-                                    : Colors.white,
-                                BlendMode.modulate),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.center,
-                                      colors: [
-                                    Colors.pink[100],
-                                    Colors.white
-                                  ])),
-                              child: new GridTile(
-                                child: ClipOval(
-                                  clipper: MyClipper(),
-                                  child: FadeInImage.memoryNetwork(
-                                      placeholder: kTransparentImage,
-                                      image: productList[index]
-                                          .productData
-                                          .productUrl),
-                                ),
-                                header: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Text(
-                                        productList[index]
-                                                .productData
-                                                .productNetWeight +
-                                            "  " +
-                                            productList[index]
-                                                .productData
-                                                .productUnit,
-                                        style: TextStyle(
-                                            fontSize: 10, color: Colors.grey),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                footer: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Container(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 150,
-                                              child: Text(
-                                                productList[index]
-                                                    .productData
-                                                    .productName,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                                overflow: TextOverflow.fade,
-                                                softWrap: false,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            SizedBox(width: 12),
-                                            Text(
-                                              "Rs. " +
-                                                  productList[index]
-                                                      .productData
-                                                      .productMrp,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  fontSize: 12),
-                                            ),
-                                            SizedBox(width: 12),
-                                            Text(
-                                              productList[index]
-                                                      .productData
-                                                      .productOffPercentage +
-                                                  "%" +
-                                                  " off",
-                                              style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 12,
-                                                  fontStyle: FontStyle.italic),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
+            return Scrollbar(
+                child: RefreshIndicator(
+              strokeWidth: 3,
+              displacement: 200,
+              color: Colors.pink[900],
+              onRefresh: () {
+                return refreshPage();
+              },
+              key: _refreshIndicatorKey,
+              child: Consumer<ProductListState>(
+                  builder: (context, product, child) {
+                List<Product> productList = product.getProductListState();
+                if (productList.length != 0) {
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, childAspectRatio: 0.7),
+                    itemCount: productList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        splashColor: Colors.white,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              SlideRightRoute(
+                                  widget: ProductDetails(
+                                    productDetailsL: productList[index],
+                                    heroIndex: "productDetails$index",
+                                  ),
+                                  slideAction: "horizontal"));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => ProductDetails(
+                          //               productDetails: productList[index],
+                          //             )));
+                        },
+                        child: new Card(
+                          elevation: 0,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.vertical(
+                                bottom: Radius.circular(10),
+                                top: Radius.circular(10)),
+                            child: ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                  productList[index].productData.discontinue
+                                      ? Colors.grey[500]
+                                      : Colors.white,
+                                  BlendMode.modulate),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.center,
+                                        colors: [
+                                      Colors.pink[100],
+                                      Colors.white
+                                    ])),
+                                child: new GridTile(
+                                  child: ClipOval(
+                                    clipper: MyClipper(),
+                                    child: FadeInImage.memoryNetwork(
+                                        placeholder: kTransparentImage,
+                                        image: productList[index]
+                                            .productData
+                                            .productUrl),
+                                  ),
+                                  header: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Text(
+                                          productList[index]
+                                                  .productData
+                                                  .productNetWeight +
+                                              "  " +
                                               productList[index]
                                                   .productData
-                                                  .productBrand,
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            )
-                                          ],
+                                                  .productUnit,
+                                          style: TextStyle(
+                                              fontSize: 10, color: Colors.grey),
                                         ),
-                                      ],
-                                    ),
+                                      )
+                                    ],
                                   ),
-                                ), //just for testing, will fill with image later
+                                  footer: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Container(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 150,
+                                                child: Text(
+                                                  productList[index]
+                                                      .productData
+                                                      .productName,
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  overflow: TextOverflow.fade,
+                                                  softWrap: false,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 12),
+                                              Text(
+                                                "Rs. " +
+                                                    productList[index]
+                                                        .productData
+                                                        .productMrp,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                    fontSize: 12),
+                                              ),
+                                              SizedBox(width: 12),
+                                              Text(
+                                                productList[index]
+                                                        .productData
+                                                        .productOffPercentage +
+                                                    "%" +
+                                                    " off",
+                                                style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 12,
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                productList[index]
+                                                    .productData
+                                                    .productBrand,
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ), //just for testing, will fill with image later
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              } else {
-                return Center(child: Text("0 Search Result!"));
-              }
-            }));
+                      );
+                    },
+                  );
+                } else {
+                  return Center(child: Text("0 Search Result!"));
+                }
+              }),
+            ));
           }
         } else {
           return FancyLoader(
@@ -432,7 +452,7 @@ class _HomeState extends State<Home> {
                 updateTabSelection(0, "Home");
                 //  Navigator.push(context, SlideRightRoute(widget: Cart()));
                 Navigator.push(
-                    context, SlideRightRoute(widget: Transactions()));
+                    context, SlideRightRoute(widget: TransactionScreen()));
               }
               break;
 
@@ -449,6 +469,29 @@ class _HomeState extends State<Home> {
         ),
       );
     }
+  }
+
+  Future<void> refreshPage() {
+    openOrdersList = OrderController().getOrdersOnlyByType("Open");
+    openOrdersList.then((value) {
+      var ordersListState =
+          Provider.of<OrdersListState>(context, listen: false);
+      ordersListState.setOrdersListState(value);
+    });
+    productList = ProductController().getProductList();
+    return productList.then((value) {
+      var productState = Provider.of<ProductListState>(context, listen: false);
+      productState.setProductListState(value);
+    }).catchError((err) {
+      progressDialog.hide();
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          "$err",
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 5),
+      ));
+    });
   }
 }
 

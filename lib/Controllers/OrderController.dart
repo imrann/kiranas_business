@@ -29,7 +29,7 @@ class OrderController {
   Future<dynamic> updateOrderStatus(
       {String orderID, String status, String est}) async {
     var statusResult = await OrderService()
-        .updateOrderStatus(orderID: orderID, status: status);
+        .updateOrderStatus(orderID: orderID, status: status, est: est);
 
     return statusResult;
   }

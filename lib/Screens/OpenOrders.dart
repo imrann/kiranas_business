@@ -1,18 +1,14 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
 import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
 import 'package:kirnas_business/Controllers/OrderController.dart';
-import 'package:kirnas_business/Podo/Orders.dart';
 import 'package:kirnas_business/Podo/OrdersData.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
-
-import 'Orders.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 final DateFormat format = new DateFormat("dd-MM-yyyy");
 
@@ -64,9 +60,7 @@ class _OpenOrdersState extends State<OpenOrders> {
         textAlign: TextAlign.center);
 
     return Container(
-      child: Center(
-        child: getOrders(),
-      ),
+      child: getOrders(),
     );
   }
 
@@ -121,7 +115,7 @@ class _OpenOrdersState extends State<OpenOrders> {
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
-                                      Text(
+                                      SelectableText(
                                           orderListState[
                                                   (orderListState.length - 1) -
                                                       index]
@@ -296,6 +290,29 @@ class _OpenOrdersState extends State<OpenOrders> {
           Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
           inventoryCardDetails("Bill Details",
               orderListState.orderData.oBillTotal.totalAmt.toString()),
+          Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
+          Row(
+            children: [
+              Text("Call Customer",
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12)),
+              Flexible(
+                child: FlatButton(
+                  child: Text(orderListState.orderData.oUserPhone,
+                      style: TextStyle(
+                          color: Colors.blue[500],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12)),
+                  onPressed: () {
+                    UrlLauncher.launch(
+                        "tel:${orderListState.orderData.oUserPhone}");
+                  },
+                ),
+              )
+            ],
+          ),
           Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
           Row(
             children: [
@@ -517,17 +534,19 @@ class _OpenOrdersState extends State<OpenOrders> {
                 orderID: orderListState.orderData.orderID,
                 status: item['buttonStatus'],
                 est: estSeletedDate)
-            .then((value) {
-          if (value == "true") {
-            Navigator.of(context).pop();
-
+            .then((isActionSuccessfull) {
+          if (isActionSuccessfull == "true") {
             openOrdersList = OrderController().getOrdersOnlyByType("Open");
 
             openOrdersList.then((value) {
               var ordersListState =
                   Provider.of<OrdersListState>(context, listen: false);
               ordersListState.setOrdersListState(value);
-              progressDialog.hide().then((value) {
+              progressDialog.hide().then((isHidden) {
+                if (orderListState.orderData.oTrackingStatus == "Placed") {
+                  Navigator.of(context).pop();
+                }
+
                 Fluttertoast.showToast(
                     msg: "Action Successfull!!",
                     fontSize: 10,

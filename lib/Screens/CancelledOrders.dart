@@ -5,6 +5,7 @@ import 'package:kirnas_business/Controllers/OrderController.dart';
 import 'package:kirnas_business/Podo/OrdersData.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 Future<dynamic> cancelledOrdersList;
 
@@ -30,9 +31,7 @@ class _CancelledOrdersState extends State<CancelledOrders> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(
-        child: getOrders(),
-      ),
+      child: getOrders(),
     );
   }
 
@@ -84,7 +83,7 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
-                                      Text(
+                                      SelectableText(
                                           orderListState[
                                                   (orderListState.length - 1) -
                                                       index]
@@ -256,6 +255,29 @@ class _CancelledOrdersState extends State<CancelledOrders> {
           Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
           inventoryCardDetails("Bill Details",
               orderListState.orderData.oBillTotal.totalAmt.toString()),
+          Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
+          Row(
+            children: [
+              Text("Call Customer",
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12)),
+              Flexible(
+                child: FlatButton(
+                  child: Text(orderListState.orderData.oUserPhone,
+                      style: TextStyle(
+                          color: Colors.blue[500],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12)),
+                  onPressed: () {
+                    UrlLauncher.launch(
+                        "tel:${orderListState.orderData.oUserPhone}");
+                  },
+                ),
+              )
+            ],
+          ),
           Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
           Row(
             children: [
