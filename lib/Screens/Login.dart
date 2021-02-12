@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:kirnas_business/Screens/Home.dart';
+import 'package:kirnas_business/Screens/NoAdminScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -64,20 +65,40 @@ class _LoginState extends State<Login> {
                       } else {
                         await UserDetailsSP().setIsAddressPresent(true);
                       }
-                      progressDialogotp.hide().then((isHidden) {
-                        if (isHidden) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Home(
-                                        user: value["userName"],
-                                        phone: value["userPhone"],
-                                        userID: value["userId"],
-                                      )));
-                          Fluttertoast.showToast(
-                              msg: "Welcome Back!",
-                              fontSize: 10,
-                              backgroundColor: Colors.black);
+
+                      LoginController()
+                          .isUserAdmin("+91" + _phoneController.text)
+                          .then((isUserAdmin) {
+                        if (isUserAdmin == "true") {
+                          progressDialogotp.hide().then((isHidden) {
+                            if (isHidden) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Home(
+                                            user: value["userName"],
+                                            phone: value["userPhone"],
+                                            userID: value["userId"],
+                                          )));
+                              Fluttertoast.showToast(
+                                  msg: "Welcome Back!",
+                                  fontSize: 10,
+                                  backgroundColor: Colors.black);
+                            }
+                          });
+                        } else {
+                          progressDialogotp.hide().then((isHidden) {
+                            if (isHidden) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NoAdminScreen()));
+                              Fluttertoast.showToast(
+                                  msg: "Welcome Back!",
+                                  fontSize: 10,
+                                  backgroundColor: Colors.black);
+                            }
+                          });
                         }
                       });
                     }
@@ -398,19 +419,40 @@ class _LoginState extends State<Login> {
 
       LoginController().createUser(userIdToken, userName).then((value) {
         if (value == "true") {
-          progressDialogotp.hide().then((isHidden) {
-            if (isHidden) {
-              Navigator.of(context).pop();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Home(
-                            user: _userNameController.text,
-                            phone: "+91" + _phoneController.text,
-                          )));
+          LoginController()
+              .isUserAdmin("+91" + _phoneController.text)
+              .then((isUserAdmin) {
+            if (isUserAdmin == "true") {
+              progressDialogotp.hide().then((isHidden) {
+                if (isHidden) {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Home(
+                                user: _userNameController.text,
+                                phone: "+91" + _phoneController.text,
+                              )));
 
-              Fluttertoast.showToast(
-                  msg: "Welcome!", fontSize: 10, backgroundColor: Colors.black);
+                  Fluttertoast.showToast(
+                      msg: "Welcome!",
+                      fontSize: 10,
+                      backgroundColor: Colors.black);
+                }
+              });
+            } else {
+              progressDialogotp.hide().then((isHidden) {
+                if (isHidden) {
+                  Navigator.of(context).pop();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => NoAdminScreen()));
+
+                  Fluttertoast.showToast(
+                      msg: "Welcome!",
+                      fontSize: 10,
+                      backgroundColor: Colors.black);
+                }
+              });
             }
           });
         } else {

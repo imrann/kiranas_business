@@ -75,4 +75,55 @@ class LoginService {
       CustomException().returnResponse(connection: false);
     } finally {}
   }
+
+  Future<dynamic> isUserAdmin(String phoneNumber) async {
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+    final String isUserAdminApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/users/isUserAdmin/$phoneNumber";
+
+    try {
+      http.Response res = await http.get(isUserAdminApi, headers: headers);
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        var adminDetails = json.decode(res.body);
+        if (adminDetails["message"]) {
+          return "true";
+        } else {
+          return "false";
+        }
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
+
+  Future<dynamic> addDeviceToken(String body) async {
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+    final String createUserApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/users/saveDeviceToken/ownerDeviceToken";
+
+    try {
+      http.Response res =
+          await http.post(createUserApi, headers: headers, body: body);
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        var tokenDetails = json.decode(res.body);
+        if (tokenDetails["message"].toString().contains("token Added")) {
+          return "true";
+        } else {
+          return "false";
+        }
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
 }

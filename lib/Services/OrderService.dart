@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:kirnas_business/CommonScreens/CustomException.dart';
-import 'package:kirnas_business/Podo/Orders.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:kirnas_business/Podo/OrdersData.dart';

@@ -115,10 +115,8 @@ class _OpenOrdersState extends State<OpenOrders> {
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
-                                      SelectableText(
-                                          orderListState[
-                                                  (orderListState.length - 1) -
-                                                      index]
+                                      Text(
+                                          orderListState[index]
                                               .orderData
                                               .orderID,
                                           style: TextStyle(
@@ -144,11 +142,7 @@ class _OpenOrdersState extends State<OpenOrders> {
                                           children: [
                                             Text(
                                                 "Tracking status       " +
-                                                    orderListState[
-                                                            (orderListState
-                                                                        .length -
-                                                                    1) -
-                                                                index]
+                                                    orderListState[index]
                                                         .orderData
                                                         .oTrackingStatus
                                                         .toString(),
@@ -164,10 +158,7 @@ class _OpenOrdersState extends State<OpenOrders> {
                                         children: [
                                           Text(
                                               "Dop                           " +
-                                                  orderListState[(orderListState
-                                                                  .length -
-                                                              1) -
-                                                          index]
+                                                  orderListState[index]
                                                       .orderData
                                                       .oDop
                                                       .toString(),
@@ -191,11 +182,7 @@ class _OpenOrdersState extends State<OpenOrders> {
                                             Flexible(
                                               child: Container(
                                                 child: Text(
-                                                    orderListState[
-                                                            (orderListState
-                                                                        .length -
-                                                                    1) -
-                                                                index]
+                                                    orderListState[index]
                                                         .orderData
                                                         .oEstDelivaryTime
                                                         .toString(),
@@ -218,9 +205,8 @@ class _OpenOrdersState extends State<OpenOrders> {
                                   Container(
                                       //   height: 100,
                                       color: Colors.grey[100],
-                                      child: inventoryCard1(orderListState[
-                                          (orderListState.length - 1) -
-                                              index])),
+                                      child: inventoryCard1(
+                                          orderListState[index])),
                                 ],
                               ),
                             ),

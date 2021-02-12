@@ -83,10 +83,8 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
-                                      SelectableText(
-                                          orderListState[
-                                                  (orderListState.length - 1) -
-                                                      index]
+                                      Text(
+                                          orderListState[index]
                                               .orderData
                                               .orderID,
                                           style: TextStyle(
@@ -112,11 +110,7 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                                           children: [
                                             Text(
                                                 "Tracking status       " +
-                                                    orderListState[
-                                                            (orderListState
-                                                                        .length -
-                                                                    1) -
-                                                                index]
+                                                    orderListState[index]
                                                         .orderData
                                                         .oTrackingStatus
                                                         .toString(),
@@ -132,10 +126,7 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                                         children: [
                                           Text(
                                               "Dop                           " +
-                                                  orderListState[(orderListState
-                                                                  .length -
-                                                              1) -
-                                                          index]
+                                                  orderListState[index]
                                                       .orderData
                                                       .oDop
                                                       .toString(),
@@ -183,9 +174,8 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                                   Container(
                                       //   height: 100,
                                       color: Colors.grey[100],
-                                      child: inventoryCard1(orderListState[
-                                          (orderListState.length - 1) -
-                                              index])),
+                                      child: inventoryCard1(
+                                          orderListState[index])),
                                 ],
                               ),
                             ),

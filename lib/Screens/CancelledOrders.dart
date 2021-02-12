@@ -83,10 +83,8 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
-                                      SelectableText(
-                                          orderListState[
-                                                  (orderListState.length - 1) -
-                                                      index]
+                                      Text(
+                                          orderListState[index]
                                               .orderData
                                               .orderID,
                                           style: TextStyle(
@@ -112,11 +110,7 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                                           children: [
                                             Text(
                                                 "Tracking status       " +
-                                                    orderListState[
-                                                            (orderListState
-                                                                        .length -
-                                                                    1) -
-                                                                index]
+                                                    orderListState[index]
                                                         .orderData
                                                         .oTrackingStatus
                                                         .toString(),
@@ -132,10 +126,7 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                                         children: [
                                           Text(
                                               "Dop                           " +
-                                                  orderListState[(orderListState
-                                                                  .length -
-                                                              1) -
-                                                          index]
+                                                  orderListState[index]
                                                       .orderData
                                                       .oDop
                                                       .toString(),
@@ -183,9 +174,8 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                                   Container(
                                       //   height: 100,
                                       color: Colors.grey[100],
-                                      child: inventoryCard1(orderListState[
-                                          (orderListState.length - 1) -
-                                              index])),
+                                      child: inventoryCard1(
+                                          orderListState[index])),
                                 ],
                               ),
                             ),
@@ -289,11 +279,11 @@ class _CancelledOrdersState extends State<CancelledOrders> {
             ],
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            // Text("ORDER CANCELLED ON :" + orderListState.orderData.oUpdateDate,
-            //     style: TextStyle(
-            //         color: Colors.grey,
-            //         fontWeight: FontWeight.normal,
-            //         fontSize: 12)),
+            Text("ORDER CANCELLED ON :" + orderListState.orderData.oUpdateDate,
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 12)),
           ])
         ],
       ),

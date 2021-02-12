@@ -44,6 +44,19 @@ class LoginController {
     return userDetails;
   }
 
+  Future<dynamic> addDeviceToken(String deviceToken) async {
+    var userDetails = await UserDetailsSP().getUserDetails();
+    String userID = userDetails['userId'];
+    var body = json.encode({
+      "token": deviceToken,
+      "userID": userID,
+    });
+
+    var tokenDetails = await LoginService().addDeviceToken(body);
+
+    return tokenDetails;
+  }
+
   Future<dynamic> createUser(IdTokenResult userIdToken, String userName) async {
     var body = json.encode({
       "userBalance": "0",
@@ -111,5 +124,11 @@ class LoginController {
     }
 
     return userDetails;
+  }
+
+  Future<dynamic> isUserAdmin(String phoneNumber) async {
+    var isUserAdmin = await LoginService().isUserAdmin(phoneNumber);
+
+    return isUserAdmin;
   }
 }

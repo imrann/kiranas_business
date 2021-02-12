@@ -5,16 +5,23 @@ import 'package:kirnas_business/Screens/DeliveredOrders.dart';
 import 'package:kirnas_business/Screens/OpenOrders.dart';
 
 class Orders extends StatefulWidget {
+  final int initialTabIndex;
+  Orders({this.initialTabIndex});
   @override
   _OrdersState createState() => _OrdersState();
 }
 
 class _OrdersState extends State<Orders> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex: widget.initialTabIndex,
       length: 3,
       child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,

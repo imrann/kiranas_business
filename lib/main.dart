@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kirnas_business/Controllers/LoginController.dart';
 import 'package:kirnas_business/Screens/Orders.dart';
 import 'package:kirnas_business/StateManager/FilterListState.dart';
 import 'package:kirnas_business/StateManager/MiscellaneousState.dart';
@@ -13,6 +14,7 @@ import 'package:kirnas_business/Screens/Home.dart';
 import 'package:kirnas_business/Screens/Login.dart';
 import 'package:kirnas_business/Screens/Maintainance.dart';
 import 'package:kirnas_business/Screens/Splash.dart';
+import 'package:kirnas_business/Screens/NoAdminScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +28,17 @@ void main() {
               currentUser.getIdToken().then((token) {
                 print(token.toString());
 
-                runApp(MyApp("HomePage", value["userName"], value["userPhone"],
-                    value["userId"]));
+                LoginController()
+                    .isUserAdmin(value["userPhone"])
+                    .then((isUserAdmin) {
+                  if (isUserAdmin == "true") {
+                    runApp(MyApp("HomePage", value["userName"],
+                        value["userPhone"], value["userId"]));
+                  } else {
+                    runApp(MyApp("NoAdminScreen", value["userName"],
+                        value["userPhone"], value["userId"]));
+                  }
+                });
               });
             } else {
               runApp(MyApp("LoginPage", value["userName"], value["userPhone"],
@@ -106,8 +117,9 @@ class MyApp extends StatelessWidget {
 
   Widget _getStartupScreens(String redirectPage, BuildContext context) {
     print(redirectPage);
-
-    if (redirectPage == "LoginPage") {
+    if (redirectPage == "NoAdminScreen") {
+      return NoAdminScreen();
+    } else if (redirectPage == "LoginPage") {
       return Login();
     } else if (redirectPage == "HomePage") {
       return Home(

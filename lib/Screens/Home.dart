@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
 import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
 import 'package:kirnas_business/CommonScreens/SlideRightRoute.dart';
+import 'package:kirnas_business/Controllers/LoginController.dart';
 import 'package:kirnas_business/Controllers/OrderController.dart';
 import 'package:kirnas_business/Controllers/ProductController.dart';
 import 'package:kirnas_business/Podo/Product.dart';
@@ -13,6 +16,7 @@ import 'package:kirnas_business/Screens/ProductDetails.dart';
 import 'package:kirnas_business/CommonScreens/AppBarCommon.dart';
 
 import 'package:flutter/material.dart';
+import 'package:kirnas_business/SharedPref/UserDetailsSP.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
 import 'package:kirnas_business/StateManager/ProductListState.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -37,6 +41,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   int selectedIndex =
       0; //to handle which item is currently selected in the bottom app bar
   String text = "Home";
@@ -47,8 +55,19 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    fab = FloatingActionButtonLocation.centerFloat;
-    miniFab = FloatingActionButtonLocation.miniEndFloat;
+    getMessage();
+    _firebaseMessaging.getToken().then((tokenValue) {
+      //
+      UserDetailsSP().getDeviceToken().then((sharedPDevicetoken) {
+        if (sharedPDevicetoken != tokenValue) {
+          LoginController().addDeviceToken(tokenValue).then((isTokenAdded) {
+            if (isTokenAdded == "true") {
+              UserDetailsSP().setDeviceToken(tokenValue);
+            }
+          });
+        }
+      });
+    });
 
     super.initState();
     openOrdersList = OrderController().getOrdersOnlyByType("Open");
@@ -71,6 +90,70 @@ class _HomeState extends State<Home> {
         ),
         duration: Duration(seconds: 5),
       ));
+    });
+
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('ic_launcher');
+    var initializationSettingsIOs = IOSInitializationSettings();
+    var initSetttings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOs);
+
+    flutterLocalNotificationsPlugin.initialize(initSetttings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String payload) {
+    return Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return Orders(initialTabIndex: int.parse(payload));
+    }));
+  }
+
+  showNotification(
+      {String title, String body, String image, int message}) async {
+    var android = AndroidNotificationDetails('id', 'channel ', 'description',
+        priority: Priority.High, importance: Importance.Max);
+    var iOS = IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+    await flutterLocalNotificationsPlugin.show(0, title, body, platform,
+        payload: message.toString());
+  }
+
+  void getMessage() {
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+      showNotification(
+        title: message["data"]["title"],
+        body: message["data"]["body"],
+        image: message["data"]["image"],
+        message: message["data"]["message"],
+      );
+      print('on message $message');
+      // setState(() => _message = message["notification"]["title"]);
+    }, onResume: (Map<String, dynamic> message) async {
+      print('on resume $message');
+
+      if (message["data"]["screen"] == "OrdersPage") {
+        Navigator.push(
+            context,
+            SlideRightRoute(
+                widget: Orders(
+                  initialTabIndex: message["data"]["message"],
+                ),
+                slideAction: "horizontal"));
+      }
+      // setState(() => _message = message["notification"]["title"]);
+    }, onLaunch: (Map<String, dynamic> message) async {
+      print('on launch $message');
+      if (message["data"]["screen"] == "OrdersPage") {
+        Navigator.push(
+            context,
+            SlideRightRoute(
+                widget: Orders(
+                  initialTabIndex: message["data"]["message"],
+                ),
+                slideAction: "horizontal"));
+      }
+      // setState(() => _message = message["notification"]["title"]);
     });
   }
 
@@ -390,7 +473,12 @@ class _HomeState extends State<Home> {
     if (sIndex == 1) {
       return FlatButton(
           onPressed: () {
-            Navigator.push(context, SlideRightRoute(widget: Orders()));
+            Navigator.push(
+                context,
+                SlideRightRoute(
+                    widget: Orders(
+                  initialTabIndex: 0,
+                )));
 
             updateTabSelection(0, "Home");
           },

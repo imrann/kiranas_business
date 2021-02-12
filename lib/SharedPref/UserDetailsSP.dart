@@ -80,4 +80,20 @@ class UserDetailsSP {
 
     return userD;
   }
+
+  Future<String> getDeviceToken() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    String token = preferences.getString("deviceToken");
+
+    return token;
+  }
+
+  Future<String> setDeviceToken(String token) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    preferences.setString("deviceToken", token);
+
+    return token;
+  }
 }
