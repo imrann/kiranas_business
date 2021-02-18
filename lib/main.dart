@@ -2,10 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kirnas_business/Controllers/LoginController.dart';
-import 'package:kirnas_business/Screens/Orders.dart';
+import 'package:kirnas_business/StateManager/CancelledOrderState.dart';
+import 'package:kirnas_business/StateManager/DeliveredOrderState.dart';
 import 'package:kirnas_business/StateManager/FilterListState.dart';
 import 'package:kirnas_business/StateManager/MiscellaneousState.dart';
+import 'package:kirnas_business/StateManager/OpenOrderState.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
+import 'package:kirnas_business/CommonScreens/RouterGenerator.dart';
+
 import 'package:kirnas_business/StateManager/ProductListState.dart';
 import 'package:kirnas_business/StateManager/TransactionState.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +18,7 @@ import 'package:kirnas_business/Screens/Home.dart';
 import 'package:kirnas_business/Screens/Login.dart';
 import 'package:kirnas_business/Screens/Maintainance.dart';
 import 'package:kirnas_business/Screens/Splash.dart';
+
 import 'package:kirnas_business/Screens/NoAdminScreen.dart';
 
 void main() {
@@ -83,8 +88,26 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => FilterListState()),
           ChangeNotifierProvider(create: (context) => MiscellaneousState()),
           ChangeNotifierProvider(create: (context) => TransactionState()),
+          ChangeNotifierProvider(create: (context) => DeliveredOrderState()),
+          ChangeNotifierProvider(create: (context) => OpenOrderState()),
+          ChangeNotifierProvider(create: (context) => CancelledOrderState()),
         ],
         child: MaterialApp(
+          onGenerateRoute: RouterGenerator.generateRoute,
+
+          // routes: {
+          //   //app routes
+          //   '/Login': (context) => Login(),
+          //   '/Home': (context) => Home(),
+          //   '/Orders': (context) => Orders(),
+          //   '/TransactionScreen': (context) => TransactionScreen(),
+          //   '/AddProduct': (context) => AddProduct(),
+
+          //   '/NoAdminScreen': (context) => NoAdminScreen(),
+          //   '/Maintainance': (context) => Maintainance(),
+          //   '/ProductDetails': (context) => ProductDetails(),
+          //   '/Splash': (context) => Splash(),
+          // },
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
@@ -107,11 +130,6 @@ class MyApp extends StatelessWidget {
             // canvasColor: colorCustom,
           ),
           home: _getStartupScreens(redirect, context),
-          routes: <String, WidgetBuilder>{
-            //app routes
-            '/Home': (BuildContext context) => Home(),
-            '/Orders': (BuildContext context) => Orders(),
-          },
         ));
   }
 

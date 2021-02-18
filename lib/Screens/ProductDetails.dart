@@ -148,15 +148,21 @@ class _ProductDetailsState extends State<ProductDetails> {
                   onPressed: () {
                     var productDetailsState =
                         Provider.of<ProductListState>(context, listen: false);
-                    Navigator.push(
-                        context,
-                        SlideRightRoute(
-                            widget: AddProduct(
-                              isUpdateProduct: true,
-                              prouctDetail:
-                                  productDetailsState.getProductState()[0],
-                            ),
-                            slideAction: "horizontal"));
+                    Navigator.pushNamed(context, '/AddProduct',
+                        arguments: AddProduct(
+                          isUpdateProduct: true,
+                          prouctDetail:
+                              productDetailsState.getProductState()[0],
+                        ));
+                    // Navigator.push(
+                    //     context,
+                    //     SlideRightRoute(
+                    //         widget: AddProduct(
+                    //           isUpdateProduct: true,
+                    //           prouctDetail:
+                    //               productDetailsState.getProductState()[0],
+                    //         ),
+                    //         slideAction: "horizontal"));
                   },
                   color: Colors.pink[900],
                   child: Row(children: <Widget>[

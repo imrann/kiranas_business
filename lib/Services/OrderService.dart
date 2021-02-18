@@ -110,4 +110,39 @@ class OrderService {
       CustomException().returnResponse(connection: false);
     } finally {}
   }
+
+  Future<dynamic> getProductByFilter(
+      {String dop,
+      String dod,
+      String doc,
+      String trackingStatus,
+      String status}) async {
+    final String getProductByFilterApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/orders/getOrderByFilter/dop/$dop/dod/$dod/doc/$doc/trackingStatus/$trackingStatus/status/$status";
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+    print(getProductByFilterApi);
+    List<OrdersData> posts = new List<OrdersData>();
+    try {
+      http.Response res =
+          await http.get(getProductByFilterApi, headers: headers);
+
+      if (res.statusCode == 200 &&
+          jsonDecode(res.body)['message']
+              .toString()
+              .contains("getOrderByFilter")) {
+        var data = jsonDecode(res.body)['orders'] as List;
+
+        posts = data.map((posts) => OrdersData.fromJson(posts)).toList();
+        print(posts);
+        return posts;
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
 }

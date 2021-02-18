@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
 import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
+import 'package:kirnas_business/CommonScreens/OrderFilterCategoryList.dart';
 import 'package:kirnas_business/Controllers/OrderController.dart';
+import 'package:kirnas_business/CustomWidgets/OrderFIlter.dart';
 import 'package:kirnas_business/Podo/OrdersData.dart';
+import 'package:kirnas_business/StateManager/CancelledOrderState.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+
+FloatingActionButtonLocation fab = FloatingActionButtonLocation.endDocked;
+FloatingActionButtonLocation totalFab = FloatingActionButtonLocation.endDocked;
 
 Future<dynamic> cancelledOrdersList;
 
@@ -15,8 +21,16 @@ class CancelledOrders extends StatefulWidget {
 }
 
 class _CancelledOrdersState extends State<CancelledOrders> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
+    fab = FloatingActionButtonLocation.endFloat;
+
+    var localCancelledFilterState =
+        Provider.of<CancelledOrderState>(context, listen: false);
+    localCancelledFilterState.clearAll();
+
     // TODO: implement initState
     super.initState();
     cancelledOrdersList = OrderController().getOrdersOnlyByType("Cancelled");
@@ -30,9 +44,102 @@ class _CancelledOrdersState extends State<CancelledOrders> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: getOrders(),
+    return Scaffold(
+      // backgroundColor: Theme.of(context).backgroundColor,
+      key: scaffoldKey,
+      extendBodyBehindAppBar: true,
+      body: Container(
+        child: getOrders(),
+      ),
+      floatingActionButtonLocation: fab,
+
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      //specify the location of the FAB
+
+      floatingActionButton: FloatingActionButton(
+          mini: true,
+          child: new Stack(
+            children: <Widget>[
+              new Icon(
+                Icons.filter_alt_outlined,
+                color: Colors.white,
+                size: 25,
+              ),
+              new Positioned(
+                right: 0.01,
+                child: Consumer<CancelledOrderState>(
+                    builder: (context, data, child) {
+                  if (data.getCancelledOrderState()["isNotifcationCue"]) {
+                    return Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 10,
+                        minHeight: 10,
+                      ),
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+                }),
+              )
+            ],
+          ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(50.0))),
+          backgroundColor: Colors.pink[900],
+          splashColor: Colors.white,
+          onPressed: () {
+            filter(context, 0.60);
+          }),
     );
+  }
+
+  filter(BuildContext context, double bottomSheetHeight) {
+    return showModalBottomSheet(
+        context: context,
+        enableDrag: false,
+        isScrollControlled: true,
+        isDismissible: false,
+        builder: (BuildContext context) {
+          return Scrollbar(
+            child: SingleChildScrollView(
+              child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setModalState) {
+                return new Container(
+                  // height: 500,
+                  decoration: new BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: new BorderRadius.only(
+                          topLeft: const Radius.circular(20.0),
+                          topRight: const Radius.circular(20.0))),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: MediaQuery.of(context).size.height *
+                            bottomSheetHeight,
+                        // width: MediaQuery.of(context).size.height * 0.95,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: OrderFilter(
+                                orderType: "Cancelled",
+                                mainOrderCategoryList: OrderFilterCategoryList()
+                                    .getCancelledOrderFilterCategoryList(),
+                              )),
+                        ),
+                      )
+                      //  displayUpiApps(),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          );
+        });
   }
 
   Widget getOrders() {
@@ -60,6 +167,10 @@ class _CancelledOrdersState extends State<CancelledOrders> {
               var orderListState = orders.getCancelOrdersListState();
               if (orderListState.length > 0) {
                 return ListView.builder(
+                    padding: const EdgeInsets.only(
+                        bottom: kFloatingActionButtonMargin + 100,
+                        top: kFloatingActionButtonMargin + 60),
+
                     //controller: _scrollController,
 
                     itemCount: orderListState.length,

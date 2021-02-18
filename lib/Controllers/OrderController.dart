@@ -33,4 +33,27 @@ class OrderController {
 
     return statusResult;
   }
+
+  Future<dynamic> getProductByFilter(
+      {String dop,
+      String dod,
+      String doc,
+      String trackingStatus,
+      String status}) async {
+    var productFilteredSearchList;
+    if (dop == null && dod == null && doc == null && trackingStatus == null) {
+      print("ALL NULLLLLLLLLLLL");
+      productFilteredSearchList =
+          await OrderService().getOrdersOnlyByType(status);
+    } else {
+      productFilteredSearchList = await OrderService().getProductByFilter(
+          dop: dop,
+          dod: dod,
+          doc: doc,
+          status: status,
+          trackingStatus: trackingStatus);
+    }
+
+    return productFilteredSearchList;
+  }
 }

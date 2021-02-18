@@ -169,14 +169,19 @@ class DrawerTiles extends StatelessWidget {
             _showPolicies("Refund", context);
           } else if (title == 'Add Product') {
             Navigator.of(context).pop();
-            Navigator.push(
-                context,
-                SlideRightRoute(
-                    widget: AddProduct(
-                      isUpdateProduct: false,
-                      prouctDetail: null,
-                    ),
-                    slideAction: "vertical"));
+            Navigator.pushNamed(context, '/AddProduct',
+                arguments: AddProduct(
+                  isUpdateProduct: false,
+                  prouctDetail: null,
+                ));
+            // Navigator.push(
+            //     context,
+            //     SlideRightRoute(
+            //         widget: AddProduct(
+            //           isUpdateProduct: false,
+            //           prouctDetail: null,
+            //         ),
+            //         slideAction: "vertical"));
           }
         });
   }
@@ -187,8 +192,15 @@ class DrawerTiles extends StatelessWidget {
     progressDialogotp.hide().then((isHidden) {
       if (isHidden) {
         UserDetailsSP().logOutUser();
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Login()));
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/Login',
+          ModalRoute.withName('/Login'),
+        );
+
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => Login()));
       }
     });
   }

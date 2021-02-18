@@ -72,14 +72,27 @@ class _LoginState extends State<Login> {
                         if (isUserAdmin == "true") {
                           progressDialogotp.hide().then((isHidden) {
                             if (isHidden) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Home(
-                                            user: value["userName"],
-                                            phone: value["userPhone"],
-                                            userID: value["userId"],
-                                          )));
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/', ModalRoute.withName('/'),
+                                  arguments: Home(
+                                    user: value["userName"],
+                                    phone: value["userPhone"],
+                                    userID: value["userId"],
+                                  ));
+                              // Navigator.pushNamed(context, '/',
+                              //     arguments: Home(
+                              //       user: value["userName"],
+                              //       phone: value["userPhone"],
+                              //       userID: value["userId"],
+                              //     ));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => Home(
+                              //               user: value["userName"],
+                              //               phone: value["userPhone"],
+                              //               userID: value["userId"],
+                              //             )));
                               Fluttertoast.showToast(
                                   msg: "Welcome Back!",
                                   fontSize: 10,
@@ -89,10 +102,11 @@ class _LoginState extends State<Login> {
                         } else {
                           progressDialogotp.hide().then((isHidden) {
                             if (isHidden) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => NoAdminScreen()));
+                              Navigator.pushNamed(context, '/NoAdminScreen');
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => NoAdminScreen()));
                               Fluttertoast.showToast(
                                   msg: "Welcome Back!",
                                   fontSize: 10,
@@ -426,13 +440,25 @@ class _LoginState extends State<Login> {
               progressDialogotp.hide().then((isHidden) {
                 if (isHidden) {
                   Navigator.of(context).pop();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Home(
-                                user: _userNameController.text,
-                                phone: "+91" + _phoneController.text,
-                              )));
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', ModalRoute.withName('/'),
+                      arguments: Home(
+                        user: value["userName"],
+                        phone: value["userPhone"],
+                        userID: value["userId"],
+                      ));
+                  // Navigator.pushNamed(context, '/',
+                  //     arguments: Home(
+                  //       user: _userNameController.text,
+                  //       phone: "+91" + _phoneController.text,
+                  //     ));
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => Home(
+                  //               user: _userNameController.text,
+                  //               phone: "+91" + _phoneController.text,
+                  //             )));
 
                   Fluttertoast.showToast(
                       msg: "Welcome!",
@@ -444,8 +470,9 @@ class _LoginState extends State<Login> {
               progressDialogotp.hide().then((isHidden) {
                 if (isHidden) {
                   Navigator.of(context).pop();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => NoAdminScreen()));
+                  Navigator.pushNamed(context, '/NoAdminScreen');
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => NoAdminScreen()));
 
                   Fluttertoast.showToast(
                       msg: "Welcome!",
@@ -522,22 +549,35 @@ class _LoginState extends State<Login> {
               if (isHidden) {
                 if (value != null) {
                   print(value["userName"]);
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Home(
-                                user: value["userName"],
-                                phone: value["userPhone"],
-                                userID: value["userId"],
-                              )));
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', ModalRoute.withName('/'),
+                      arguments: Home(
+                        user: value["userName"],
+                        phone: value["userPhone"],
+                        userID: value["userId"],
+                      ));
+                  // Navigator.pushNamed(context, '/',
+                  //     arguments: Home(
+                  //       user: value["userName"],
+                  //       phone: value["userPhone"],
+                  //       userID: value["userId"],
+                  //     ));
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => Home(
+                  //               user: value["userName"],
+                  //               phone: value["userPhone"],
+                  //               userID: value["userId"],
+                  //             )));
                   Fluttertoast.showToast(
                       msg: "Welcome Back!",
                       fontSize: 10,
                       backgroundColor: Colors.black);
                 } else {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Login()));
+                  Navigator.pushNamed(context, '/Login');
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => Login()));
                   Fluttertoast.showToast(
                       msg: "Something went wrong! please try later",
                       fontSize: 10,
@@ -826,10 +866,12 @@ class _LoginState extends State<Login> {
                                   fontWeight: FontWeight.bold),
                             ),
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Login()));
+                              Navigator.pushNamed(context, '/Login');
+
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => Login()));
                             },
                           ),
                         ],

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kirnas_business/CommonScreens/OrderFilterCategoryList.dart';
+import 'package:kirnas_business/CustomWidgets/OrderFIlter.dart';
+import 'package:kirnas_business/StateManager/DeliveredOrderState.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
@@ -8,6 +11,9 @@ import 'package:kirnas_business/Podo/OrdersData.dart';
 import 'package:kirnas_business/StateManager/OrdersListState.dart';
 import 'package:provider/provider.dart';
 
+FloatingActionButtonLocation fab = FloatingActionButtonLocation.endDocked;
+FloatingActionButtonLocation totalFab = FloatingActionButtonLocation.endDocked;
+
 Future<dynamic> deliveredOrdersList;
 
 class DeliveredOrders extends StatefulWidget {
@@ -16,10 +22,19 @@ class DeliveredOrders extends StatefulWidget {
 }
 
 class _DeliveredOrdersState extends State<DeliveredOrders> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
+    fab = FloatingActionButtonLocation.endFloat;
+
     // TODO: implement initState
     super.initState();
+
+    var localDeliveredFilterState =
+        Provider.of<DeliveredOrderState>(context, listen: false);
+    localDeliveredFilterState.clearAll();
+
     deliveredOrdersList = OrderController().getOrdersOnlyByType("Delivered");
 
     deliveredOrdersList.then((value) {
@@ -31,7 +46,107 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: getOrders());
+    return Scaffold(
+      // backgroundColor: Theme.of(context).backgroundColor,
+      key: scaffoldKey,
+      extendBodyBehindAppBar: true,
+      body: Container(
+        child: getOrders(),
+      ),
+      floatingActionButtonLocation: fab,
+
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      //specify the location of the FAB
+
+      floatingActionButton: FloatingActionButton(
+          mini: true,
+          child: new Stack(
+            children: <Widget>[
+              new Icon(
+                Icons.filter_alt_outlined,
+                color: Colors.white,
+                size: 25,
+              ),
+              new Positioned(
+                right: 0.01,
+                child: Consumer<DeliveredOrderState>(
+                    builder: (context, data, child) {
+                  if (data.getDeliveredOrderState()["isNotifcationCue"]) {
+                    return Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 10,
+                        minHeight: 10,
+                      ),
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+                }),
+              )
+            ],
+          ),
+
+          // Icon(
+          //   Icons.filter_alt_outlined,
+          //   color: Colors.white,
+          // ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(50.0))),
+          backgroundColor: Colors.pink[900],
+          splashColor: Colors.white,
+          onPressed: () {
+            filter(context, 0.60);
+          }),
+    );
+  }
+
+  filter(BuildContext context, double bottomSheetHeight) {
+    return showModalBottomSheet(
+        context: context,
+        enableDrag: false,
+        isScrollControlled: true,
+        isDismissible: false,
+        builder: (BuildContext context) {
+          return Scrollbar(
+            child: SingleChildScrollView(
+              child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setModalState) {
+                return new Container(
+                  // height: 500,
+                  decoration: new BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: new BorderRadius.only(
+                          topLeft: const Radius.circular(20.0),
+                          topRight: const Radius.circular(20.0))),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: MediaQuery.of(context).size.height *
+                            bottomSheetHeight,
+                        // width: MediaQuery.of(context).size.height * 0.95,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: OrderFilter(
+                                orderType: "Delivered",
+                                mainOrderCategoryList: OrderFilterCategoryList()
+                                    .getDeliveredOrderFilterCategoryList(),
+                              )),
+                        ),
+                      )
+                      //  displayUpiApps(),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          );
+        });
   }
 
   Widget getOrders() {
@@ -58,7 +173,11 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
               var orderListState = orders.getDeliveredOrdersListState();
               if (orderListState.length > 0) {
                 return ListView.builder(
+                    padding: const EdgeInsets.only(
+                        bottom: kFloatingActionButtonMargin + 100,
+                        top: kFloatingActionButtonMargin + 60),
                     shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
 
                     //controller: _scrollController,
 

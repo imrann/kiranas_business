@@ -103,19 +103,30 @@ class _HomeState extends State<Home> {
   }
 
   Future onSelectNotification(String payload) {
-    return Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      return Orders(initialTabIndex: int.parse(payload));
-    }));
+    // return Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+    //   return Orders(initialTabIndex: payload);
+    // }
+    // ));
+    return Navigator.pushNamedAndRemoveUntil(
+        context, '/Orders', ModalRoute.withName('/'),
+        arguments: Orders(initialTabIndex: payload));
+
+    // return Navigator.pushAndRemoveUntil(
+    //     context,
+    //     SlideRightRoute(
+    //         widget: Orders(initialTabIndex: payload),
+    //         slideAction: "horizontal"),
+    //     ModalRoute.withName('/'));
   }
 
   showNotification(
-      {String title, String body, String image, int message}) async {
+      {String title, String body, String image, String message}) async {
     var android = AndroidNotificationDetails('id', 'channel ', 'description',
         priority: Priority.High, importance: Importance.Max);
     var iOS = IOSNotificationDetails();
     var platform = new NotificationDetails(android, iOS);
     await flutterLocalNotificationsPlugin.show(0, title, body, platform,
-        payload: message.toString());
+        payload: message);
   }
 
   void getMessage() {
@@ -133,25 +144,32 @@ class _HomeState extends State<Home> {
       print('on resume $message');
 
       if (message["data"]["screen"] == "OrdersPage") {
-        Navigator.push(
-            context,
-            SlideRightRoute(
-                widget: Orders(
-                  initialTabIndex: message["data"]["message"],
-                ),
-                slideAction: "horizontal"));
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/Orders', ModalRoute.withName('/'),
+            arguments: Orders(initialTabIndex: message["data"]["message"]));
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     SlideRightRoute(
+        //         widget: Orders(
+        //           initialTabIndex: message["data"]["message"],
+        //         ),
+        //         slideAction: "horizontal"),
+        //     ModalRoute.withName('/Home'));
       }
       // setState(() => _message = message["notification"]["title"]);
     }, onLaunch: (Map<String, dynamic> message) async {
       print('on launch $message');
       if (message["data"]["screen"] == "OrdersPage") {
-        Navigator.push(
-            context,
-            SlideRightRoute(
-                widget: Orders(
-                  initialTabIndex: message["data"]["message"],
-                ),
-                slideAction: "horizontal"));
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/Orders', ModalRoute.withName('/'),
+            arguments: Orders(initialTabIndex: message["data"]["message"]));
+        // Navigator.push(
+        //     context,
+        //     SlideRightRoute(
+        //         widget: Orders(
+        //           initialTabIndex: message["data"]["message"],
+        //         ),
+        //         slideAction: "horizontal"));
       }
       // setState(() => _message = message["notification"]["title"]);
     });
@@ -313,14 +331,19 @@ class _HomeState extends State<Home> {
                       return InkWell(
                         splashColor: Colors.white,
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              SlideRightRoute(
-                                  widget: ProductDetails(
-                                    productDetailsL: productList[index],
-                                    heroIndex: "productDetails$index",
-                                  ),
-                                  slideAction: "horizontal"));
+                          Navigator.pushNamed(context, '/ProductDetails',
+                              arguments: ProductDetails(
+                                productDetailsL: productList[index],
+                                heroIndex: "productDetails$index",
+                              ));
+                          // Navigator.push(
+                          //     context,
+                          //     SlideRightRoute(
+                          //         widget: ProductDetails(
+                          //           productDetailsL: productList[index],
+                          //           heroIndex: "productDetails$index",
+                          //         ),
+                          //         slideAction: "horizontal"));
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(
@@ -473,12 +496,16 @@ class _HomeState extends State<Home> {
     if (sIndex == 1) {
       return FlatButton(
           onPressed: () {
-            Navigator.push(
-                context,
-                SlideRightRoute(
-                    widget: Orders(
-                  initialTabIndex: 0,
-                )));
+            Navigator.pushNamed(context, '/Orders',
+                arguments: Orders(
+                  initialTabIndex: "0",
+                ));
+            // Navigator.push(
+            //     context,
+            //     SlideRightRoute(
+            //         widget: Orders(
+            //       initialTabIndex: "0",
+            //     )));
 
             updateTabSelection(0, "Home");
           },
@@ -538,9 +565,9 @@ class _HomeState extends State<Home> {
             case "Transactions":
               {
                 updateTabSelection(0, "Home");
-                //  Navigator.push(context, SlideRightRoute(widget: Cart()));
-                Navigator.push(
-                    context, SlideRightRoute(widget: TransactionScreen()));
+                Navigator.pushNamed(context, '/TransactionScreen');
+                // Navigator.push(
+                //     context, SlideRightRoute(widget: TransactionScreen()));
               }
               break;
 
