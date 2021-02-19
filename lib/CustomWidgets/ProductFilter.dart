@@ -19,15 +19,14 @@ class ProductFilter extends StatefulWidget {
 class _ProductFilterState extends State<ProductFilter> {
   List<String> cat = new List<String>();
   List<String> dis = new List<String>();
+  List<String> cachedSubFilters = new List<String>();
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   ProgressDialog progressDialog;
 
-  List<String> cachedSubFilters = new List<String>();
   @override
   void initState() {
-    List<String> cachedSubFilters = [];
     // TODO: implement initState
     super.initState();
     filterSubList =
@@ -43,7 +42,7 @@ class _ProductFilterState extends State<ProductFilter> {
     });
   }
 
-  int selectedIndex;
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -316,8 +315,8 @@ class _ProductFilterState extends State<ProductFilter> {
                   ],
                 );
               } else {
-                return Center(
-                  child: Text("0 Filters!!!!"),
+                return FancyLoader(
+                  loaderType: "logo",
                 );
               }
             }));
@@ -366,6 +365,15 @@ class _ProductFilterState extends State<ProductFilter> {
               ProductController().getFilterListByName("productCategoryList");
           filterSubList.then((value) {
             filter.setFilterProductCategory(value);
+          }).catchError((err) {
+            progressDialog.hide();
+            scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: Text(
+                "$err",
+                textAlign: TextAlign.center,
+              ),
+              duration: Duration(seconds: 5),
+            ));
           });
           cachedSubFilters.add("Category");
         }
@@ -375,11 +383,20 @@ class _ProductFilterState extends State<ProductFilter> {
         if (cachedSubFilters.contains("Discount")) {
           filter.setActiveFilter("productDiscountList");
         } else {
+          filter.setActiveFilter("productDiscountList");
           filterSubList =
               ProductController().getFilterListByName("productDiscountList");
           filterSubList.then((value) {
             filter.setFilterDiscountCategory(value);
-            filter.setActiveFilter("productDiscountList");
+          }).catchError((err) {
+            progressDialog.hide();
+            scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: Text(
+                "$err",
+                textAlign: TextAlign.center,
+              ),
+              duration: Duration(seconds: 5),
+            ));
           });
           cachedSubFilters.add("Discount");
         }

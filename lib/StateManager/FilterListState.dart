@@ -13,6 +13,8 @@ class FilterListState extends ChangeNotifier {
   clearAllProductFilter() {
     this.sFilterDiscountCategory.clear();
     this.sFilterProductCategory.clear();
+    this.productFilterNotification = false;
+
     notifyListeners();
   }
 
