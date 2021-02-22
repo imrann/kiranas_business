@@ -28,7 +28,7 @@ class ProductData {
   String updateDate;
   String productUrl;
   String productName;
-  String productOffPercentage;
+  int productOffPercentage;
   String productCategory;
   String productBrand;
   String productNetWeight;

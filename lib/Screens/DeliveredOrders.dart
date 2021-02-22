@@ -3,6 +3,7 @@ import 'package:kirnas_business/CommonScreens/OrderFilterCategoryList.dart';
 import 'package:kirnas_business/CustomWidgets/OrderFIlter.dart';
 import 'package:kirnas_business/StateManager/DeliveredOrderState.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+import 'package:intl/intl.dart';
 
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
 import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
@@ -13,6 +14,9 @@ import 'package:provider/provider.dart';
 
 FloatingActionButtonLocation fab = FloatingActionButtonLocation.endDocked;
 FloatingActionButtonLocation totalFab = FloatingActionButtonLocation.endDocked;
+
+final DateFormat formatDate = new DateFormat("EEE, d/M/y");
+final DateFormat format = new DateFormat.jms();
 
 Future<dynamic> deliveredOrdersList;
 
@@ -31,13 +35,13 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
     // TODO: implement initState
     super.initState();
 
-    var localDeliveredFilterState =
-        Provider.of<DeliveredOrderState>(context, listen: false);
-    localDeliveredFilterState.clearAll();
-
     deliveredOrdersList = OrderController().getOrdersOnlyByType("Delivered");
 
     deliveredOrdersList.then((value) {
+      var localDeliveredFilterState =
+          Provider.of<DeliveredOrderState>(context, listen: false);
+      localDeliveredFilterState.clearAll();
+
       var ordersListState =
           Provider.of<OrdersListState>(context, listen: false);
       ordersListState.setDeliveredOrdersListState(value);
@@ -245,10 +249,9 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                                         children: [
                                           Text(
                                               "Dop                           " +
-                                                  orderListState[index]
-                                                      .orderData
-                                                      .oDop
-                                                      .toString(),
+                                                  "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}" +
+                                                  "  " +
+                                                  "${format.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}",
                                               style: TextStyle(
                                                   color: Colors.grey,
                                                   fontWeight: FontWeight.normal,
@@ -398,7 +401,11 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
             ],
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text("ORDER DELIVERED ON :" + orderListState.orderData.oUpdateDate,
+            Text(
+                "ORDER DELIVERED ON :" +
+                    "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(orderListState.orderData.oUpdateDate))}" +
+                    "  " +
+                    "${format.format(new DateTime.fromMillisecondsSinceEpoch(orderListState.orderData.oUpdateDate))}",
                 style: TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.normal,
@@ -449,10 +456,10 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                                       .orderData.oProducts[index].productQty) *
                                   (int.parse(orderListState.orderData
                                           .oProducts[index].productMrp) -
-                                      ((int.parse(orderListState
+                                      ((orderListState
                                                   .orderData
                                                   .oProducts[index]
-                                                  .productOffPercentage) /
+                                                  .productOffPercentage /
                                               100) *
                                           int.parse(orderListState.orderData
                                               .oProducts[index].productMrp))))

@@ -6,6 +6,10 @@ import 'package:kirnas_business/Podo/Transactions.dart';
 import 'package:kirnas_business/StateManager/TransactionState.dart';
 import 'package:provider/provider.dart';
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
+import 'package:intl/intl.dart';
+
+final DateFormat formatDate = new DateFormat("EEE, d/M/y");
+final DateFormat format = new DateFormat.jms();
 
 Future<dynamic> transactionList;
 
@@ -37,7 +41,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
       key: scaffoldKey,
       extendBodyBehindAppBar: true,
       appBar: new AppBarCommon(
-        title: Text("Transactions"),
+        title: Text(
+          "Transactions",
+          style: TextStyle(fontSize: 18),
+        ),
         //  profileIcon: Icons.search,
         // trailingIcon: Icons.filter_alt_outlined,
         centerTile: false,
@@ -103,10 +110,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
                                       Text(
-                                          trasactionListState[
-                                                  (trasactionListState.length -
-                                                          1) -
-                                                      index]
+                                          trasactionListState[index]
                                               .transData
                                               .tParty,
                                           style: TextStyle(
@@ -133,11 +137,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                             Text(
                                                 "Amount                       " +
                                                     "\u20B9" +
-                                                    trasactionListState[
-                                                            (trasactionListState
-                                                                        .length -
-                                                                    1) -
-                                                                index]
+                                                    trasactionListState[index]
                                                         .transData
                                                         .tBillAmt
                                                         .toString(),
@@ -158,26 +158,19 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                   fontWeight: FontWeight.normal,
                                                   fontSize: 12)),
                                           Text(
-                                            trasactionListState[
-                                                    (trasactionListState
-                                                                .length -
-                                                            1) -
-                                                        index]
+                                            trasactionListState[index]
                                                 .transData
                                                 .tStatus
                                                 .toString(),
                                             style: TextStyle(
-                                                color: trasactionListState[
-                                                                (trasactionListState
-                                                                            .length -
-                                                                        1) -
-                                                                    index]
-                                                            .transData
-                                                            .tStatus
-                                                            .toString() ==
-                                                        "Completed"
-                                                    ? Colors.green
-                                                    : Colors.red,
+                                                color:
+                                                    trasactionListState[index]
+                                                                .transData
+                                                                .tStatus
+                                                                .toString() ==
+                                                            "Completed"
+                                                        ? Colors.green
+                                                        : Colors.red,
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 12),
                                           )
@@ -190,14 +183,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           children: [
                                             Text(
                                                 "Last Update Date      " +
-                                                    trasactionListState[
-                                                            (trasactionListState
-                                                                        .length -
-                                                                    1) -
-                                                                index]
-                                                        .transData
-                                                        .tUpdationDate
-                                                        .toString(),
+                                                    "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(trasactionListState[index].transData.tUpdationDate))}" +
+                                                    "  " +
+                                                    "${format.format(new DateTime.fromMillisecondsSinceEpoch(trasactionListState[index].transData.tUpdationDate))}",
                                                 style: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 12,
@@ -213,9 +201,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   Container(
                                       //   height: 100,
                                       color: Colors.grey[100],
-                                      child: inventoryCard1(trasactionListState[
-                                          (trasactionListState.length - 1) -
-                                              index])),
+                                      child: inventoryCard1(
+                                          trasactionListState[index])),
                                 ],
                               ),
                             ),
@@ -264,8 +251,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
           Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
           inventoryCardDetails("Order ID", trasactionState.transData.tOrderID),
           Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
-          inventoryCardDetails(
-              "Creation Date", trasactionState.transData.tCreationDate),
+          inventoryCardDetails("Creation Date",
+              trasactionState.transData.tCreationDate.toString()),
           Divider(thickness: 0.5, endIndent: 5, color: Colors.grey[300]),
           inventoryCardDetails(
               "Mode Of trasaction", trasactionState.transData.tMode),
@@ -292,13 +279,24 @@ class _TransactionScreenState extends State<TransactionScreen> {
         ),
         Row(
           children: [
-            Flexible(
-              child: SelectableText(titleValue,
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12)),
-            )
+            titleName == "Creation Date"
+                ? Flexible(
+                    child: SelectableText(
+                        "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(int.parse(titleValue)))}" +
+                            "  " +
+                            "${format.format(new DateTime.fromMillisecondsSinceEpoch(int.parse(titleValue)))}",
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12)),
+                  )
+                : Flexible(
+                    child: SelectableText(titleValue,
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12)),
+                  )
           ],
         ),
       ],

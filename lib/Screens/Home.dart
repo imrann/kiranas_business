@@ -227,7 +227,10 @@ class _HomeState extends State<Home> {
       key: scaffoldKey,
       extendBodyBehindAppBar: true,
       appBar: new AppBarCommon(
-        title: Text("ALL PRODUCTS"),
+        title: Text(
+          "ALL PRODUCTS",
+          style: TextStyle(fontSize: 18),
+        ),
         profileIcon: Icons.search,
         trailingIcon: Icons.filter_alt_outlined,
         centerTile: false,
@@ -336,23 +339,9 @@ class _HomeState extends State<Home> {
                                 productDetailsL: productList[index],
                                 heroIndex: "productDetails$index",
                               ));
-                          // Navigator.push(
-                          //     context,
-                          //     SlideRightRoute(
-                          //         widget: ProductDetails(
-                          //           productDetailsL: productList[index],
-                          //           heroIndex: "productDetails$index",
-                          //         ),
-                          //         slideAction: "horizontal"));
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => ProductDetails(
-                          //               productDetails: productList[index],
-                          //             )));
                         },
                         child: new Card(
-                          elevation: 0,
+                          elevation: 1,
                           child: ClipRRect(
                             borderRadius: BorderRadius.vertical(
                                 bottom: Radius.circular(10),
@@ -360,115 +349,134 @@ class _HomeState extends State<Home> {
                             child: ColorFiltered(
                               colorFilter: ColorFilter.mode(
                                   productList[index].productData.discontinue
-                                      ? Colors.grey[500]
+                                      ? Colors.grey[700]
                                       : Colors.white,
                                   BlendMode.modulate),
                               child: Container(
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        begin: Alignment.bottomCenter,
-                                        end: Alignment.center,
-                                        colors: [
-                                      Colors.pink[100],
-                                      Colors.white
-                                    ])),
-                                child: new GridTile(
-                                  child: ClipOval(
-                                    clipper: MyClipper(),
-                                    child: FadeInImage.memoryNetwork(
-                                        placeholder: kTransparentImage,
-                                        image: productList[index]
-                                            .productData
-                                            .productUrl),
-                                  ),
-                                  header: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Text(
-                                          productList[index]
-                                                  .productData
-                                                  .productNetWeight +
-                                              "  " +
-                                              productList[index]
-                                                  .productData
-                                                  .productUnit,
-                                          style: TextStyle(
-                                              fontSize: 10, color: Colors.grey),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  footer: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Container(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
+                                // decoration: BoxDecoration(
+                                //     gradient: LinearGradient(
+                                //         begin: Alignment.bottomCenter,
+                                //         end: Alignment.center,
+                                //         colors: [Colors.white, Colors.white])),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      child: Stack(
                                         children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                width: 150,
+                                          new FadeInImage.memoryNetwork(
+                                              fit: BoxFit.fill,
+                                              placeholder: kTransparentImage,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.24,
+                                              image: productList[index]
+                                                  .productData
+                                                  .productUrl),
+                                          Positioned(
+                                              top: 5,
+                                              right: 5,
+                                              child: Container(
+                                                color: Colors.pink[900],
                                                 child: Text(
                                                   productList[index]
-                                                      .productData
-                                                      .productName,
+                                                          .productData
+                                                          .productNetWeight +
+                                                      "  " +
+                                                      productList[index]
+                                                          .productData
+                                                          .productUnit,
                                                   style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                  overflow: TextOverflow.fade,
-                                                  softWrap: false,
+                                                      fontSize: 10,
+                                                      color: Colors.white),
                                                 ),
-                                              )
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              SizedBox(width: 12),
-                                              Text(
-                                                "Rs. " +
-                                                    productList[index]
-                                                        .productData
-                                                        .productMrp,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                    fontSize: 12),
-                                              ),
-                                              SizedBox(width: 12),
-                                              Text(
-                                                productList[index]
-                                                        .productData
-                                                        .productOffPercentage +
-                                                    "%" +
-                                                    " off",
-                                                style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 12,
-                                                    fontStyle:
-                                                        FontStyle.italic),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                productList[index]
-                                                    .productData
-                                                    .productBrand,
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              )
-                                            ],
-                                          ),
+                                              )),
                                         ],
                                       ),
                                     ),
-                                  ), //just for testing, will fill with image later
+                                    Row(
+                                      children: [
+                                        SizedBox(width: 8),
+                                        Container(
+                                          width: 150,
+                                          child: Text(
+                                            productList[index]
+                                                .productData
+                                                .productName,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                            overflow: TextOverflow.fade,
+                                            softWrap: false,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(width: 8),
+                                        Text(
+                                          "\u20B9" +
+                                              (int.parse(productList[index]
+                                                          .productData
+                                                          .productMrp) -
+                                                      ((productList[0]
+                                                                  .productData
+                                                                  .productOffPercentage /
+                                                              100) *
+                                                          int.parse(
+                                                              productList[index]
+                                                                  .productData
+                                                                  .productMrp)))
+                                                  .toString(),
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(width: 12),
+                                        Text(
+                                          "\u20B9" +
+                                              productList[index]
+                                                  .productData
+                                                  .productMrp,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                              fontSize: 12),
+                                        ),
+                                        SizedBox(width: 12),
+                                        Text(
+                                          productList[index]
+                                                  .productData
+                                                  .productOffPercentage
+                                                  .toString() +
+                                              "%" +
+                                              " off",
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 12,
+                                              fontStyle: FontStyle.italic),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(width: 8),
+                                        Text(
+                                          productList[index]
+                                              .productData
+                                              .productBrand,
+                                          style: TextStyle(color: Colors.black),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(width: 5),
+                                  ],
                                 ),
                               ),
                             ),

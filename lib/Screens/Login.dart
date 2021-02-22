@@ -72,8 +72,8 @@ class _LoginState extends State<Login> {
                         if (isUserAdmin == "true") {
                           progressDialogotp.hide().then((isHidden) {
                             if (isHidden) {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, '/', ModalRoute.withName('/'),
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  '/Home', ModalRoute.withName('/Home'),
                                   arguments: Home(
                                     user: value["userName"],
                                     phone: value["userPhone"],

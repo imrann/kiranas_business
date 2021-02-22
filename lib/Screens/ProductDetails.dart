@@ -73,7 +73,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.center,
-                  colors: [Colors.pink[100], Colors.white])),
+                  colors: [Colors.white, Colors.white])),
           child: getProductDetails()),
       bottomNavigationBar: FutureBuilder<dynamic>(
         future: productDetails,
@@ -119,7 +119,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   getBottonButtons(List<Product> productList) {
     return Container(
-      color: Colors.pink[100],
+      color: Colors.white,
       height: MediaQuery.of(context).size.height * 0.1,
       child: Column(
         children: [
@@ -307,12 +307,16 @@ class _ProductDetailsState extends State<ProductDetails> {
               List<Product> productList = product.getProductState();
               if (productList.length != 0) {
                 return ListView(
+                  padding: EdgeInsets.zero,
                   children: [
-                    Container(
+                    ClipRRect(
+                      borderRadius: BorderRadius.vertical(
+                        bottom: Radius.circular(20),
+                      ),
                       child: FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
-                        height: MediaQuery.of(context).size.height * 0.5,
-                        fit: BoxFit.cover,
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        fit: BoxFit.fill,
                         width: double.infinity,
                         alignment: Alignment.center,
                         image: productList[0].productData.productUrl,
@@ -381,7 +385,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   Text(
                                     productList[0]
                                             .productData
-                                            .productOffPercentage +
+                                            .productOffPercentage
+                                            .toString() +
                                         "%" +
                                         " off",
                                     style: TextStyle(
@@ -406,9 +411,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     (int.parse(productList[0]
                                                 .productData
                                                 .productMrp) -
-                                            ((int.parse(productList[0]
+                                            ((productList[0]
                                                         .productData
-                                                        .productOffPercentage) /
+                                                        .productOffPercentage /
                                                     100) *
                                                 int.parse(productList[0]
                                                     .productData

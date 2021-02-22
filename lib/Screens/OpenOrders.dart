@@ -16,7 +16,9 @@ import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 FloatingActionButtonLocation fab = FloatingActionButtonLocation.endDocked;
 FloatingActionButtonLocation totalFab = FloatingActionButtonLocation.endDocked;
 
-final DateFormat format = new DateFormat("dd-MM-yyyy");
+final DateFormat formatDate = new DateFormat("EEE, d/M/y");
+final DateFormat format = new DateFormat.jms();
+final DateFormat formatForEstTime = new DateFormat("dd-MM-yyyy");
 
 Future<dynamic> openOrdersList;
 
@@ -38,18 +40,14 @@ class _OpenOrdersState extends State<OpenOrders> {
   void initState() {
     fab = FloatingActionButtonLocation.endFloat;
 
-    var localOpenFilterState =
-        Provider.of<OpenOrderState>(context, listen: false);
-    localOpenFilterState.clearAll();
-
     // TODO: implement initState
     super.initState();
 
     var now = new DateTime.now();
     var tomorrowDate = new DateTime(now.year, now.month, now.day + 1);
 
-    formattedTomorrowDate = format.format(tomorrowDate);
-    formattedTodayDate = format.format(now);
+    formattedTomorrowDate = formatForEstTime.format(tomorrowDate);
+    formattedTodayDate = formatForEstTime.format(now);
 
     estSeletedDate = formattedTomorrowDate;
     _selection = [false, true, false];
@@ -57,6 +55,10 @@ class _OpenOrdersState extends State<OpenOrders> {
     openOrdersList = OrderController().getOrdersOnlyByType("Open");
 
     openOrdersList.then((value) {
+      var localOpenFilterState =
+          Provider.of<OpenOrderState>(context, listen: false);
+      localOpenFilterState.clearAll();
+
       var ordersListState =
           Provider.of<OrdersListState>(context, listen: false);
       ordersListState.setOrdersListState(value);
@@ -272,10 +274,9 @@ class _OpenOrdersState extends State<OpenOrders> {
                                         children: [
                                           Text(
                                               "Dop                           " +
-                                                  orderListState[index]
-                                                      .orderData
-                                                      .oDop
-                                                      .toString(),
+                                                  "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}" +
+                                                  "  " +
+                                                  "${format.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}",
                                               style: TextStyle(
                                                   color: Colors.grey,
                                                   fontWeight: FontWeight.normal,
@@ -578,7 +579,8 @@ class _OpenOrdersState extends State<OpenOrders> {
                                         },
                                       ).then((date) {
                                         print(date);
-                                        var date1 = format.format(date);
+                                        var date1 =
+                                            formatForEstTime.format(date);
 
                                         setModalState(() {
                                           estSeletedDate = date1;
@@ -706,10 +708,10 @@ class _OpenOrdersState extends State<OpenOrders> {
                                       .orderData.oProducts[index].productQty) *
                                   (int.parse(orderListState.orderData
                                           .oProducts[index].productMrp) -
-                                      ((int.parse(orderListState
+                                      ((orderListState
                                                   .orderData
                                                   .oProducts[index]
-                                                  .productOffPercentage) /
+                                                  .productOffPercentage /
                                               100) *
                                           int.parse(orderListState.orderData
                                               .oProducts[index].productMrp))))

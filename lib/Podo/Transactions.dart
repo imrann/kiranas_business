@@ -21,15 +21,14 @@ class Transactions {
 }
 
 class TransData {
-  String tCreationDate;
+  int tCreationDate;
   String tParty;
   String tOrderID;
   String tBillAmt;
   String tStatus;
-  String tUpdationDate;
+  int tUpdationDate;
   String tMode;
   String tTransactionAction;
-  String tDate;
 
   TransData(
       {this.tCreationDate,
@@ -39,21 +38,18 @@ class TransData {
       this.tStatus,
       this.tUpdationDate,
       this.tMode,
-      this.tTransactionAction,
-      this.tDate});
+      this.tTransactionAction});
 
   factory TransData.fromJson(Map<String, dynamic> parsedJson) {
     return new TransData(
-      tCreationDate: parsedJson['t_CreationDate'],
-      tParty: parsedJson['t_Party'],
-      tOrderID: parsedJson['t_OrderID'],
-      tBillAmt: parsedJson['t_BillAmt'],
-      tStatus: parsedJson['t_Status'],
-      tUpdationDate: parsedJson['t_UpdationDate'],
-      tMode: parsedJson['t_Mode'],
-      tTransactionAction: parsedJson['t_TransactionAction'],
-      tDate: parsedJson['t_Date'],
-    );
+        tCreationDate: parsedJson['t_CreationDate'],
+        tParty: parsedJson['t_Party'],
+        tOrderID: parsedJson['t_OrderID'],
+        tBillAmt: parsedJson['t_BillAmt'],
+        tStatus: parsedJson['t_Status'],
+        tUpdationDate: parsedJson['t_UpdationDate'],
+        tMode: parsedJson['t_Mode'],
+        tTransactionAction: parsedJson['t_TransactionAction']);
   }
 
   Map<String, dynamic> toJson() {
@@ -66,7 +62,6 @@ class TransData {
     data['t_UpdationDate'] = this.tUpdationDate;
     data['t_Mode'] = this.tMode;
     data['t_TransactionAction'] = this.tTransactionAction;
-    data['t_Date'] = this.tDate;
     return data;
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
 import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
 import 'package:kirnas_business/CommonScreens/OrderFilterCategoryList.dart';
@@ -12,6 +14,8 @@ import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 FloatingActionButtonLocation fab = FloatingActionButtonLocation.endDocked;
 FloatingActionButtonLocation totalFab = FloatingActionButtonLocation.endDocked;
+final DateFormat formatDate = new DateFormat("EEE, d/M/y");
+final DateFormat format = new DateFormat.jms();
 
 Future<dynamic> cancelledOrdersList;
 
@@ -27,15 +31,15 @@ class _CancelledOrdersState extends State<CancelledOrders> {
   void initState() {
     fab = FloatingActionButtonLocation.endFloat;
 
-    var localCancelledFilterState =
-        Provider.of<CancelledOrderState>(context, listen: false);
-    localCancelledFilterState.clearAll();
-
     // TODO: implement initState
     super.initState();
     cancelledOrdersList = OrderController().getOrdersOnlyByType("Cancelled");
 
     cancelledOrdersList.then((value) {
+      var localCancelledFilterState =
+          Provider.of<CancelledOrderState>(context, listen: false);
+      localCancelledFilterState.clearAll();
+
       var ordersListState =
           Provider.of<OrdersListState>(context, listen: false);
       ordersListState.setCancelOrdersListState(value);
@@ -236,11 +240,15 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                                       Row(
                                         children: [
                                           Text(
+                                              // "Dop                           " +
+                                              //     orderListState[index]
+                                              //         .orderData
+                                              //         .oDop
+                                              //         .toString(),
                                               "Dop                           " +
-                                                  orderListState[index]
-                                                      .orderData
-                                                      .oDop
-                                                      .toString(),
+                                                  "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}" +
+                                                  "  " +
+                                                  "${format.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}",
                                               style: TextStyle(
                                                   color: Colors.grey,
                                                   fontWeight: FontWeight.normal,
@@ -390,7 +398,11 @@ class _CancelledOrdersState extends State<CancelledOrders> {
             ],
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text("ORDER CANCELLED ON :" + orderListState.orderData.oUpdateDate,
+            Text(
+                "ORDER CANCELLED ON :" +
+                    "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(orderListState.orderData.oUpdateDate))}" +
+                    "  " +
+                    "${format.format(new DateTime.fromMillisecondsSinceEpoch(orderListState.orderData.oUpdateDate))}",
                 style: TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.normal,
@@ -441,10 +453,10 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                                       .orderData.oProducts[index].productQty) *
                                   (int.parse(orderListState.orderData
                                           .oProducts[index].productMrp) -
-                                      ((int.parse(orderListState
+                                      ((orderListState
                                                   .orderData
                                                   .oProducts[index]
-                                                  .productOffPercentage) /
+                                                  .productOffPercentage /
                                               100) *
                                           int.parse(orderListState.orderData
                                               .oProducts[index].productMrp))))

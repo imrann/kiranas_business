@@ -11,6 +11,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 
 final DateFormat format = new DateFormat("dd-MM-yyyy");
+final DateFormat formatDate = new DateFormat("EEE, d/M/y");
 
 class OrderFilter extends StatefulWidget {
   final String orderType;
@@ -390,7 +391,11 @@ class _OrderFilterState extends State<OrderFilter> {
                   child: Row(
                     children: [
                       Text(deliveredOrderStateLocal[
-                          deliveredOrderData.getActiveFilter()]),
+                                  deliveredOrderData.getActiveFilter()]
+                              .toString()
+                              .contains("select")
+                          ? "Select Date"
+                          : "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(int.parse(deliveredOrderStateLocal[deliveredOrderData.getActiveFilter()])))}"),
                       SizedBox(width: 20),
                       Icon(Icons.calendar_today)
                     ],
@@ -410,7 +415,11 @@ class _OrderFilterState extends State<OrderFilter> {
                   child: Row(
                     children: [
                       Text(cancelledOrderState[
-                          cancelledOrderData.getActiveFilter()]),
+                                  cancelledOrderData.getActiveFilter()]
+                              .toString()
+                              .contains("select")
+                          ? "Select Date"
+                          : "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(int.parse(cancelledOrderState[cancelledOrderData.getActiveFilter()])))}"),
                       SizedBox(width: 20),
                       Icon(Icons.calendar_today)
                     ],
@@ -433,7 +442,11 @@ class _OrderFilterState extends State<OrderFilter> {
                     },
                     child: Row(
                       children: [
-                        Text(openOrderState[openOrderData.getActiveFilter()]),
+                        Text(openOrderState[openOrderData.getActiveFilter()]
+                                .toString()
+                                .contains("select")
+                            ? "Select Date"
+                            : "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(int.parse(openOrderState[openOrderData.getActiveFilter()])))}"),
                         SizedBox(width: 20),
                         Icon(Icons.calendar_today)
                       ],
@@ -526,7 +539,10 @@ class _OrderFilterState extends State<OrderFilter> {
         );
       },
     ).then((date) {
-      var date1 = format.format(date);
+      var formattedDate = format.format(date);
+      var epochConvertedDate = date.millisecondsSinceEpoch;
+      print(formattedDate.toString() + "  " + epochConvertedDate.toString());
+
       // print(date1);
       if (widget.orderType.contains("Delivered")) {
         var deliveredOrderdFilterState =
@@ -534,7 +550,8 @@ class _OrderFilterState extends State<OrderFilter> {
 
         setState(() {
           deliveredOrderStateLocal.update(
-              deliveredOrderdFilterState.getActiveFilter(), (v) => date1);
+              deliveredOrderdFilterState.getActiveFilter(),
+              (v) => epochConvertedDate.toString());
           deliveredOrderStateLocal.update("isNotifcationCue", (v) => true);
         });
         deliveredOrderdFilterState.setIsClearFilter(false);
@@ -547,7 +564,8 @@ class _OrderFilterState extends State<OrderFilter> {
 
         setState(() {
           cancelledOrderState.update(
-              cancelledOrderdFilterState.getActiveFilter(), (v) => date1);
+              cancelledOrderdFilterState.getActiveFilter(),
+              (v) => epochConvertedDate.toString());
           cancelledOrderState.update("isNotifcationCue", (v) => true);
         });
         cancelledOrderdFilterState.setIsClearFilter(false);
@@ -556,8 +574,8 @@ class _OrderFilterState extends State<OrderFilter> {
             Provider.of<OpenOrderState>(context, listen: false);
 
         setState(() {
-          openOrderState.update(
-              openOrderdFilterState.getActiveFilter(), (v) => date1);
+          openOrderState.update(openOrderdFilterState.getActiveFilter(),
+              (v) => epochConvertedDate.toString());
           openOrderState.update("isNotifcationCue", (v) => true);
         });
         openOrderdFilterState.setIsClearFilter(false);

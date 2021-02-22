@@ -22,14 +22,14 @@ class OrdersData {
 
 class OrderData {
   OBillTotal oBillTotal;
-  String oDop;
+  int oDop;
   String oEstDelivaryTime;
   String oStatus;
   String oTrackingStatus;
   String oUserID;
   String oUserName;
   String oUserPhone;
-  String oUpdateDate;
+  int oUpdateDate;
   String orderID;
   OUserAddress oUserAddress;
   List<OProducts> oProducts;
@@ -171,7 +171,7 @@ class OProducts {
   String productMrp;
   String productName;
   String productNetWeight;
-  String productOffPercentage;
+  int productOffPercentage;
   String productQty;
   String productUnit;
   String productUrl;

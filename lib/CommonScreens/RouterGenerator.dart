@@ -16,6 +16,16 @@ class RouterGenerator {
     switch (settings.name) {
       case '/Login':
         return MaterialPageRoute(builder: (_) => Login());
+      case '/Home':
+        final Home args = settings.arguments;
+
+        return MaterialPageRoute(
+          builder: (_) => Home(
+            phone: args.phone,
+            user: args.user,
+            userID: args.userID,
+          ),
+        );
       case '/':
         final Home args = settings.arguments;
 

@@ -238,7 +238,7 @@ class _AddProductState extends State<AddProduct> {
           ),
           "keyboardType": TextInputType.number,
           "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productOffPercentage
+              ? widget.prouctDetail.productData.productOffPercentage.toString()
               : null,
         },
       ];
@@ -451,9 +451,12 @@ class _AddProductState extends State<AddProduct> {
             return getForms();
           }
         } else {
-          return Center(
-            child: FancyLoader(
-              loaderType: "logo",
+          return Padding(
+            padding: const EdgeInsets.only(top: 400),
+            child: Center(
+              child: FancyLoader(
+                loaderType: "logo",
+              ),
             ),
           );
         }
@@ -739,7 +742,7 @@ class _AddProductState extends State<AddProduct> {
             productDescriptionController.text,
             productMrpController.text,
             productNameController.text,
-            productOffPercentageController.text,
+            int.parse(productOffPercentageController.text),
             productQtyController.text,
             productUnitController.text,
             productNetWeightController.text,
@@ -801,7 +804,7 @@ class _AddProductState extends State<AddProduct> {
             productDescriptionController.text,
             productMrpController.text,
             productNameController.text,
-            productOffPercentageController.text,
+            int.parse(productOffPercentageController.text),
             productQtyController.text,
             productUnitController.text,
             productNetWeightController.text,
