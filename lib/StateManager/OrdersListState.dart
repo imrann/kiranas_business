@@ -12,6 +12,12 @@ class OrdersListState extends ChangeNotifier {
     notifyListeners();
   }
 
+  addAllOrdersListState(List<OrdersData> ordersListState) {
+    this.ordersListState.addAll(ordersListState);
+    notifyListeners();
+  }
+
+  /////////////////////////////////////////////////////////////////////////
   List<OrdersData> cancelOrdersListState = [];
 
   List<OrdersData> getCancelOrdersListState() => cancelOrdersListState;
@@ -21,12 +27,23 @@ class OrdersListState extends ChangeNotifier {
     notifyListeners();
   }
 
+  addAllCancelOrdersListState(List<OrdersData> cancelOrdersListState) {
+    this.cancelOrdersListState.addAll(cancelOrdersListState);
+    notifyListeners();
+  }
+
+/////////////////////////////////////////////////////////////////////////////////
   List<OrdersData> deliveredOrdersListState = [];
 
   List<OrdersData> getDeliveredOrdersListState() => deliveredOrdersListState;
 
   setDeliveredOrdersListState(List<OrdersData> deliveredOrdersListState) {
     this.deliveredOrdersListState = deliveredOrdersListState;
+    notifyListeners();
+  }
+
+  addAllDeliveredOrdersListState(List<OrdersData> deliveredOrdersListState) {
+    this.deliveredOrdersListState.addAll(deliveredOrdersListState);
     notifyListeners();
   }
 }

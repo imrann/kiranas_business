@@ -45,10 +45,41 @@ class OrderService {
       if (res.statusCode == 200 &&
           jsonDecode(res.body)['message']
               .toString()
-              .contains("getOrdersByType")) {
+              .contains("getOrdersOnlyByType")) {
         var data = jsonDecode(res.body)['orders'] as List;
 
         posts = data.map((posts) => OrdersData.fromJson(posts)).toList();
+
+        return posts;
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
+
+  Future<dynamic> getPaginatedOrdersOnlyByType(
+      String type, String lastOrderID, num lastOUpdateDate) async {
+    final String getPaginatedOrdersOnlyByTypeApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/orders/getPaginatedOrdersOnlyByType/$type/$lastOrderID/$lastOUpdateDate";
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+    List<OrdersData> posts = new List<OrdersData>();
+    try {
+      http.Response res =
+          await http.get(getPaginatedOrdersOnlyByTypeApi, headers: headers);
+      if (res.statusCode == 200 &&
+          jsonDecode(res.body)['message']
+              .toString()
+              .contains("getPaginatedOrdersOnlyByType")) {
+        var data = jsonDecode(res.body)['orders'] as List;
+
+        posts = data.map((posts) => OrdersData.fromJson(posts)).toList();
+        print(jsonDecode(res.body)['lastOrderID'].toString());
+        print(jsonDecode(res.body)['lastOUpdateDate'].toString());
 
         return posts;
       } else {

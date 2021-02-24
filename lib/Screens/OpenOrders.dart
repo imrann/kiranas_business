@@ -29,6 +29,11 @@ class OpenOrders extends StatefulWidget {
 
 class _OpenOrdersState extends State<OpenOrders> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  ScrollController _controller = ScrollController();
+
+  bool isPaginationActive;
+  bool isMoreOrdersAvailable;
+  bool isGetMoreOrders;
 
   String estSeletedDate;
   List<bool> _selection = new List<bool>();
@@ -36,8 +41,72 @@ class _OpenOrdersState extends State<OpenOrders> {
   String formattedTodayDate;
   ProgressDialog progressDialog;
 
+  getOpenOrdersChunk() {
+    openOrdersList = OrderController().getOrdersOnlyByType("Open");
+
+    openOrdersList.then((value) {
+      var localOpenFilterState =
+          Provider.of<OpenOrderState>(context, listen: false);
+      localOpenFilterState.clearAll();
+
+      var ordersListState =
+          Provider.of<OrdersListState>(context, listen: false);
+      ordersListState.setOrdersListState(value);
+    });
+  }
+
+  getPaginatedOrdersOnlyByType() {
+    if (isMoreOrdersAvailable && isGetMoreOrders) {
+      setState(() {
+        isPaginationActive = true;
+        isGetMoreOrders = false;
+      });
+
+      var ordersListState =
+          Provider.of<OrdersListState>(context, listen: false);
+      List<OrdersData> currentOpenOrderListState =
+          ordersListState.getOrdersListState();
+
+      String lastOrderID =
+          currentOpenOrderListState[(currentOpenOrderListState.length) - 1]
+              .orderData
+              .orderID;
+      int lastOUpdateDate =
+          currentOpenOrderListState[(currentOpenOrderListState.length) - 1]
+              .orderData
+              .oUpdateDate;
+
+      Future openOrdersPaginatedList = OrderController()
+          .getPaginatedOrdersOnlyByType("Open", lastOrderID, lastOUpdateDate);
+      openOrdersPaginatedList.then((value) {
+        List<dynamic> paginatedData = value;
+        print(paginatedData.length.toString());
+        if (paginatedData.length != 0) {
+          var ordersListState =
+              Provider.of<OrdersListState>(context, listen: false);
+          ordersListState.addAllOrdersListState(value);
+        } else {
+          setState(() {
+            isMoreOrdersAvailable = false;
+          });
+          Fluttertoast.showToast(
+              msg: "No more orders !!",
+              fontSize: 10,
+              backgroundColor: Colors.black);
+        }
+        setState(() {
+          isPaginationActive = false;
+          isGetMoreOrders = true;
+        });
+      });
+    }
+  }
+
   @override
   void initState() {
+    isPaginationActive = false;
+    isMoreOrdersAvailable = true;
+    isGetMoreOrders = true;
     fab = FloatingActionButtonLocation.endFloat;
 
     // TODO: implement initState
@@ -51,18 +120,17 @@ class _OpenOrdersState extends State<OpenOrders> {
 
     estSeletedDate = formattedTomorrowDate;
     _selection = [false, true, false];
+    getOpenOrdersChunk();
+    _controller.addListener(_scrollListener);
+  }
 
-    openOrdersList = OrderController().getOrdersOnlyByType("Open");
-
-    openOrdersList.then((value) {
-      var localOpenFilterState =
-          Provider.of<OpenOrderState>(context, listen: false);
-      localOpenFilterState.clearAll();
-
-      var ordersListState =
-          Provider.of<OrdersListState>(context, listen: false);
-      ordersListState.setOrdersListState(value);
-    });
+  _scrollListener() {
+    double maxScroll = _controller.position.maxScrollExtent;
+    double currentScroll = _controller.position.pixels;
+    double delta = MediaQuery.of(context).size.height * 0.1;
+    if (maxScroll - currentScroll <= delta && isMoreOrdersAvailable) {
+      getPaginatedOrdersOnlyByType();
+    }
   }
 
   @override
@@ -126,7 +194,7 @@ class _OpenOrdersState extends State<OpenOrders> {
           onPressed: () {
             filter(context, 0.60);
             // var searchDateState =
-            //     Provider.of<StateManager>(context, listen: false);
+            //     Provider.of<StateManager>(context, listen: false);r
             // searchDateState.setSearchDate("WholeList");
 
             // searchDateState.setClearFilter(false);
@@ -205,135 +273,160 @@ class _OpenOrdersState extends State<OpenOrders> {
                 print(item.orderData.oProducts.toString());
               }
               if (orderListState.length > 0) {
-                return ListView.builder(
-                    //controller: _scrollController,
-                    padding: const EdgeInsets.only(
-                        bottom: kFloatingActionButtonMargin + 100,
-                        top: kFloatingActionButtonMargin + 60),
-                    itemCount: orderListState.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.fromLTRB(3, 10, 3, 0),
-                            child: Card(
-                              elevation: 1.0,
-                              child: ExpansionTile(
-                                //tilePadding: EdgeInsets.all(5),
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                          controller: _controller,
+                          padding: const EdgeInsets.only(
+                              bottom: kFloatingActionButtonMargin + 100,
+                              top: kFloatingActionButtonMargin + 60),
+                          itemCount: orderListState.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: <Widget>[
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(3, 10, 3, 0),
+                                  child: Card(
+                                    elevation: 1.0,
+                                    child: ExpansionTile(
+                                      //tilePadding: EdgeInsets.all(5),
 
-                                title: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 7, 0, 7),
-                                  child: Row(
-                                    children: [
-                                      Text("Order ID: ",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15)),
-                                      Text(
-                                          orderListState[index]
-                                              .orderData
-                                              .orderID,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 15))
-                                    ],
-                                  ),
-                                ),
-                                subtitle: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Padding(
+                                      title: Padding(
                                         padding: const EdgeInsets.fromLTRB(
-                                            0, 5, 0, 5),
+                                            0, 7, 0, 7),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                                "Tracking status       " +
-                                                    orderListState[index]
-                                                        .orderData
-                                                        .oTrackingStatus
-                                                        .toString(),
+                                            Text("Order ID: ",
                                                 style: TextStyle(
-                                                    color: Colors.grey,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15)),
+                                            Text(
+                                                orderListState[index]
+                                                    .orderData
+                                                    .orderID,
+                                                style: TextStyle(
+                                                    color: Colors.black,
                                                     fontWeight:
                                                         FontWeight.normal,
-                                                    fontSize: 12)),
+                                                    fontSize: 15))
                                           ],
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                              "Dop                           " +
-                                                  "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}" +
-                                                  "  " +
-                                                  "${format.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}",
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize: 12)),
-                                        ],
-                                      ),
-                                      Padding(
+
+                                      subtitle: Padding(
                                         padding: const EdgeInsets.fromLTRB(
-                                            0, 5, 0, 5),
-                                        child: Row(
+                                            0, 0, 0, 0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
                                           children: [
-                                            Text("Est delivery time    ",
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    fontSize: 12)),
-                                            Flexible(
-                                              child: Container(
-                                                child: Text(
-                                                    orderListState[index]
-                                                        .orderData
-                                                        .oEstDelivaryTime
-                                                        .toString(),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 5, 0, 5),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                      "Tracking status       " +
+                                                          orderListState[index]
+                                                              .orderData
+                                                              .oTrackingStatus
+                                                              .toString(),
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                          fontSize: 12)),
+                                                ],
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                    "Dop                           " +
+                                                        "${formatDate.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}" +
+                                                        "  " +
+                                                        "${format.format(new DateTime.fromMillisecondsSinceEpoch(orderListState[index].orderData.oDop))}",
                                                     style: TextStyle(
                                                         color: Colors.grey,
                                                         fontWeight:
                                                             FontWeight.normal,
                                                         fontSize: 12)),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 5, 0, 5),
+                                              child: Row(
+                                                children: [
+                                                  Text("Est delivery time    ",
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                          fontSize: 12)),
+                                                  Flexible(
+                                                    child: Container(
+                                                      child: Text(
+                                                          orderListState[index]
+                                                              .orderData
+                                                              .oEstDelivaryTime
+                                                              .toString(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                              fontSize: 12)),
+                                                    ),
+                                                  )
+                                                ],
                                               ),
-                                            )
+                                            ),
                                           ],
                                         ),
                                       ),
-                                    ],
+
+                                      children: <Widget>[
+                                        Container(
+
+                                            //   height: 100,
+
+                                            color: Colors.grey[100],
+                                            child: inventoryCard1(
+                                                orderListState[index])),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                children: <Widget>[
-                                  Container(
-                                      //   height: 100,
-                                      color: Colors.grey[100],
-                                      child: inventoryCard1(
-                                          orderListState[index])),
-                                ],
-                              ),
-                            ),
-                          ),
-                          // Divider(
-                          //   thickness: 0,
-                          //   indent: 0,
-                          //   endIndent: 0,
-                          // )
-                        ],
-                      );
-                    });
+
+                                // Divider(
+
+                                //   thickness: 0,
+
+                                //   indent: 0,
+
+                                //   endIndent: 0,
+
+                                // )
+                              ],
+                            );
+                          }),
+                    ),
+                    isPaginationActive
+                        ? CircularProgressIndicator()
+                        : SizedBox()
+                  ],
+                );
               } else {
                 return Center(
                   child: Text("No Open Orders!!"),
