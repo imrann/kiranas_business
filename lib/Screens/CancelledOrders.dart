@@ -33,6 +33,11 @@ class _CancelledOrdersState extends State<CancelledOrders> {
   bool isMoreOrdersAvailable;
   bool isGetMoreOrders;
 
+  setIsMoreOrdersAvailable() {
+    isMoreOrdersAvailable = true;
+    print("Called BACK");
+  }
+
   getCancelledOrdersChunk() {
     cancelledOrdersList = OrderController().getOrdersOnlyByType("Cancelled");
 
@@ -48,7 +53,6 @@ class _CancelledOrdersState extends State<CancelledOrders> {
   }
 
   getPaginatedOrdersOnlyByType() {
-    print("Step2");
     if (isMoreOrdersAvailable && isGetMoreOrders) {
       setState(() {
         isPaginationActive = true;
@@ -111,11 +115,20 @@ class _CancelledOrdersState extends State<CancelledOrders> {
   }
 
   _scrollListener() {
-    double maxScroll = _controller.position.maxScrollExtent;
-    double currentScroll = _controller.position.pixels;
-    double delta = MediaQuery.of(context).size.height * 0.1;
-    if (maxScroll - currentScroll <= delta && isMoreOrdersAvailable) {
-      getPaginatedOrdersOnlyByType();
+    var cancelleddOrderdFilterState =
+        Provider.of<CancelledOrderState>(context, listen: false);
+
+    if (!cancelleddOrderdFilterState
+        .getCancelledOrderState()["isNotifcationCue"]) {
+      print("filter NOT active");
+      double maxScroll = _controller.position.maxScrollExtent;
+      double currentScroll = _controller.position.pixels;
+      double delta = MediaQuery.of(context).size.height * 0.1;
+      if (maxScroll - currentScroll <= delta && isMoreOrdersAvailable) {
+        getPaginatedOrdersOnlyByType();
+      }
+    } else {
+      print("filter  active");
     }
   }
 
@@ -203,6 +216,8 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                           child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: OrderFilter(
+                                setIsMoreOrdersAvailable:
+                                    setIsMoreOrdersAvailable,
                                 orderType: "Cancelled",
                                 mainOrderCategoryList: OrderFilterCategoryList()
                                     .getCancelledOrderFilterCategoryList(),

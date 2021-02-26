@@ -14,10 +14,14 @@ final DateFormat format = new DateFormat("dd-MM-yyyy");
 final DateFormat formatDate = new DateFormat("EEE, d/M/y");
 
 class OrderFilter extends StatefulWidget {
+  final Function setIsMoreOrdersAvailable;
   final String orderType;
   final List<String> mainOrderCategoryList;
 
-  OrderFilter({this.orderType, this.mainOrderCategoryList});
+  OrderFilter(
+      {this.setIsMoreOrdersAvailable,
+      this.orderType,
+      this.mainOrderCategoryList});
 
   @override
   _OrderFilterState createState() => _OrderFilterState();
@@ -236,6 +240,9 @@ class _OrderFilterState extends State<OrderFilter> {
               Navigator.of(context).pop();
               progressDialog.hide();
             });
+            setState(() {
+              widget.setIsMoreOrdersAvailable();
+            });
           } else {
             deliveredOrderdFilterState
                 .setDeliveredOrderState(deliveredOrderStateLocal);
@@ -285,6 +292,9 @@ class _OrderFilterState extends State<OrderFilter> {
               Navigator.of(context).pop();
               progressDialog.hide();
             });
+            setState(() {
+              widget.setIsMoreOrdersAvailable();
+            });
           } else {
             cancelledOrderdFilterState
                 .setCancelledOrderState(cancelledOrderState);
@@ -332,6 +342,9 @@ class _OrderFilterState extends State<OrderFilter> {
               openOrderdFilterState.clearAll();
               Navigator.of(context).pop();
               progressDialog.hide();
+            });
+            setState(() {
+              widget.setIsMoreOrdersAvailable();
             });
           } else {
             openOrderdFilterState.setOpenOrderState(openOrderState);

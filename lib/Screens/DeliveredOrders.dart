@@ -34,6 +34,11 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
   bool isMoreOrdersAvailable;
   bool isGetMoreOrders;
 
+  setIsMoreOrdersAvailable() {
+    isMoreOrdersAvailable = true;
+    print("Called BACK");
+  }
+
   getDeliveredOrdersChunk() {
     deliveredOrdersList = OrderController().getOrdersOnlyByType("Delivered");
 
@@ -112,11 +117,20 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
   }
 
   _scrollListener() {
-    double maxScroll = _controller.position.maxScrollExtent;
-    double currentScroll = _controller.position.pixels;
-    double delta = MediaQuery.of(context).size.height * 0.1;
-    if (maxScroll - currentScroll <= delta && isMoreOrdersAvailable) {
-      getPaginatedOrdersOnlyByType();
+    var deliveredOrderdFilterState =
+        Provider.of<DeliveredOrderState>(context, listen: false);
+
+    if (!deliveredOrderdFilterState
+        .getDeliveredOrderState()["isNotifcationCue"]) {
+      print("filter NOT active");
+      double maxScroll = _controller.position.maxScrollExtent;
+      double currentScroll = _controller.position.pixels;
+      double delta = MediaQuery.of(context).size.height * 0.1;
+      if (maxScroll - currentScroll <= delta && isMoreOrdersAvailable) {
+        getPaginatedOrdersOnlyByType();
+      }
+    } else {
+      print("filter  active");
     }
   }
 

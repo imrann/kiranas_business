@@ -1,22 +1,6 @@
 import 'package:flutter/material.dart';
 
 class DeliveredOrderState extends ChangeNotifier {
-  String lastOrderID = "";
-  String lastOUpdateDate = "";
-
-  String getLastOrderID() => lastOrderID;
-  String getLastOUpdateDate() => lastOUpdateDate;
-
-  setLastOrderID(String lastOrderID) {
-    this.lastOrderID = lastOrderID;
-    notifyListeners();
-  }
-
-  setLastOUpdateDate(String lastOUpdateDate) {
-    this.lastOUpdateDate = lastOUpdateDate;
-    notifyListeners();
-  }
-
   /////////////////////////////////////////////////////////////////////
   bool isClearFilter = false;
   bool getIsClearFilter() => isClearFilter;

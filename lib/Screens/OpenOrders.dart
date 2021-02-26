@@ -35,6 +35,11 @@ class _OpenOrdersState extends State<OpenOrders> {
   bool isMoreOrdersAvailable;
   bool isGetMoreOrders;
 
+  setIsMoreOrdersAvailable() {
+    isMoreOrdersAvailable = true;
+    print("Called BACK");
+  }
+
   String estSeletedDate;
   List<bool> _selection = new List<bool>();
   String formattedTomorrowDate;
@@ -125,11 +130,19 @@ class _OpenOrdersState extends State<OpenOrders> {
   }
 
   _scrollListener() {
-    double maxScroll = _controller.position.maxScrollExtent;
-    double currentScroll = _controller.position.pixels;
-    double delta = MediaQuery.of(context).size.height * 0.1;
-    if (maxScroll - currentScroll <= delta && isMoreOrdersAvailable) {
-      getPaginatedOrdersOnlyByType();
+    var openOrderdFilterState =
+        Provider.of<OpenOrderState>(context, listen: false);
+
+    if (!openOrderdFilterState.getOpenOrderState()["isNotifcationCue"]) {
+      print("filter NOT active");
+      double maxScroll = _controller.position.maxScrollExtent;
+      double currentScroll = _controller.position.pixels;
+      double delta = MediaQuery.of(context).size.height * 0.1;
+      if (maxScroll - currentScroll <= delta && isMoreOrdersAvailable) {
+        getPaginatedOrdersOnlyByType();
+      }
+    } else {
+      print("filter  active");
     }
   }
 
