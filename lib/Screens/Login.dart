@@ -441,11 +441,10 @@ class _LoginState extends State<Login> {
                 if (isHidden) {
                   Navigator.of(context).pop();
                   Navigator.pushNamedAndRemoveUntil(
-                      context, '/', ModalRoute.withName('/'),
+                      context, '/Home', ModalRoute.withName('/Home'),
                       arguments: Home(
-                        user: value["userName"],
-                        phone: value["userPhone"],
-                        userID: value["userId"],
+                        user: _userNameController.text,
+                        phone: "+91" + _phoneController.text,
                       ));
                   // Navigator.pushNamed(context, '/',
                   //     arguments: Home(

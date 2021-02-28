@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:kirnas_business/CommonScreens/AppBarCommon.dart';
+import 'package:kirnas_business/Screens/DrawerNav.dart';
 
 class NoAdminScreen extends StatefulWidget {
   @override
@@ -8,13 +12,57 @@ class NoAdminScreen extends StatefulWidget {
 class _NoAdminScreenState extends State<NoAdminScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Future<bool> _onBackPressed() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('You are going to exit the application!!'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  'NO',
+                  style: TextStyle(color: Colors.pink[900]),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text(
+                  'YES',
+                  style: TextStyle(color: Colors.pink[900]),
+                ),
+                onPressed: () {
+                  exit(0);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).primaryColor,
       key: scaffoldKey,
-      extendBodyBehindAppBar: false,
-      body: noAdminMsg(),
+      extendBodyBehindAppBar: true,
+      appBar: new AppBarCommon(
+        title: Text(
+          "",
+          style: TextStyle(fontSize: 18),
+        ),
+        trailingIcon: Icons.logout,
+        centerTile: false,
+        context: context,
+        notificationCount: Text("i"),
+        isTabBar: false,
+      ),
+
+      // backgroundColor: Theme.of(context).backgroundColor,
+      body: WillPopScope(onWillPop: _onBackPressed, child: noAdminMsg()),
 
       //specify the location of the FAB
     );

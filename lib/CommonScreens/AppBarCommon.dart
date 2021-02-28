@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:kirnas_business/Controllers/ProductController.dart';
 import 'package:kirnas_business/CustomWidgets/ProductFilter.dart';
 import 'package:kirnas_business/Screens/Home.dart';
+import 'package:kirnas_business/SharedPref/UserDetailsSP.dart';
 import 'package:kirnas_business/StateManager/FilterListState.dart';
 import 'package:kirnas_business/StateManager/ProductListState.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 
 bool l_isSearch;
@@ -43,6 +46,8 @@ class AppBarCommon extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppBarCommonState extends State<AppBarCommon> {
+  ProgressDialog progressDialogotp;
+
   @override
   void initState() {
     super.initState();
@@ -51,6 +56,13 @@ class _AppBarCommonState extends State<AppBarCommon> {
 
   @override
   Widget build(BuildContext context) {
+    progressDialogotp = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    progressDialogotp.style(
+        message: " Logging Out...",
+        progressWidget: CircularProgressIndicator(),
+        progressWidgetAlignment: Alignment.centerRight,
+        textAlign: TextAlign.center);
     return AppBar(
       bottom: getTabBar(isTabBar: widget.isTabBar),
       centerTitle: widget.centerTile,
@@ -160,7 +172,7 @@ class _AppBarCommonState extends State<AppBarCommon> {
               child: (productFilterIcon == icon)
                   ? getProductNotificationBadge()
                   : Icon(icon),
-              onTap: () {
+              onTap: () async {
                 if (icon == Icons.search) {
                   print("search");
                   setState(() {
@@ -178,6 +190,23 @@ class _AppBarCommonState extends State<AppBarCommon> {
                   filter.clearAllProductFilter();
                 } else if (icon == Icons.filter_alt_outlined) {
                   filter(context, 0.90);
+                } else if (icon == Icons.logout) {
+                  final FirebaseAuth _auth = FirebaseAuth.instance;
+                  await _auth.signOut();
+                  progressDialogotp.hide().then((isHidden) {
+                    if (isHidden) {
+                      UserDetailsSP().logOutUser();
+
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/Login',
+                        ModalRoute.withName('/Login'),
+                      );
+
+                      // Navigator.push(
+                      //     context, MaterialPageRoute(builder: (context) => Login()));
+                    }
+                  });
                 }
                 //  else if (icon == Icons.search) {
                 //   print("calender");

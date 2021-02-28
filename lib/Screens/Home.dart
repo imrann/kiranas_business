@@ -328,7 +328,9 @@ class _HomeState extends State<Home> {
                 if (productList.length != 0) {
                   return GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, childAspectRatio: 0.7),
+                        crossAxisCount:
+                            (MediaQuery.of(context).size.width > 450.0) ? 3 : 2,
+                        childAspectRatio: 0.7),
                     itemCount: productList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
@@ -353,129 +355,169 @@ class _HomeState extends State<Home> {
                                       : Colors.white,
                                   BlendMode.modulate),
                               child: Container(
-                                // decoration: BoxDecoration(
-                                //     gradient: LinearGradient(
-                                //         begin: Alignment.bottomCenter,
-                                //         end: Alignment.center,
-                                //         colors: [Colors.white, Colors.white])),
                                 child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Expanded(
+                                      child: Container(
+                                        width: double.infinity,
+                                        child: Stack(
+                                          children: [
+                                            new FadeInImage.memoryNetwork(
+                                                fit: BoxFit.fill,
+                                                placeholder: kTransparentImage,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.24,
+                                                image: productList[index]
+                                                    .productData
+                                                    .productUrl),
+                                            Positioned(
+                                                top: 5,
+                                                right: 5,
+                                                child: Container(
+                                                  color: Colors.pink[900],
+                                                  child: Text(
+                                                    productList[index]
+                                                            .productData
+                                                            .productNetWeight +
+                                                        "  " +
+                                                        productList[index]
+                                                            .productData
+                                                            .productUnit,
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors.white),
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                     Container(
-                                      child: Stack(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
-                                          new FadeInImage.memoryNetwork(
-                                              fit: BoxFit.fill,
-                                              placeholder: kTransparentImage,
+                                          SizedBox(
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  0.24,
-                                              image: productList[index]
-                                                  .productData
-                                                  .productUrl),
-                                          Positioned(
-                                              top: 5,
-                                              right: 5,
-                                              child: Container(
-                                                color: Colors.pink[900],
+                                                  0.01),
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 8),
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                            .size
+                                                            .width >
+                                                        450.0
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.25
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.4,
                                                 child: Text(
                                                   productList[index]
-                                                          .productData
-                                                          .productNetWeight +
-                                                      "  " +
-                                                      productList[index]
-                                                          .productData
-                                                          .productUnit,
+                                                      .productData
+                                                      .productName,
                                                   style: TextStyle(
-                                                      fontSize: 10,
-                                                      color: Colors.white),
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  overflow: TextOverflow.fade,
+                                                  softWrap: false,
                                                 ),
-                                              )),
+                                              )
+                                            ],
+                                          ),
+                                          SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01),
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 8),
+                                              Text(
+                                                "\u20B9" +
+                                                    (int.parse(productList[
+                                                                    index]
+                                                                .productData
+                                                                .productMrp) -
+                                                            ((productList[0]
+                                                                        .productData
+                                                                        .productOffPercentage /
+                                                                    100) *
+                                                                int.parse(productList[
+                                                                        index]
+                                                                    .productData
+                                                                    .productMrp)))
+                                                        .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(width: 12),
+                                              Text(
+                                                "\u20B9" +
+                                                    productList[index]
+                                                        .productData
+                                                        .productMrp,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                    fontSize: 12),
+                                              ),
+                                              SizedBox(width: 12),
+                                              Text(
+                                                productList[index]
+                                                        .productData
+                                                        .productOffPercentage
+                                                        .toString() +
+                                                    "%" +
+                                                    " off",
+                                                style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 12,
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01),
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 8),
+                                              Text(
+                                                productList[index]
+                                                    .productData
+                                                    .productBrand,
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              )
+                                            ],
+                                          ),
+                                          SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01),
                                         ],
                                       ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        SizedBox(width: 8),
-                                        Container(
-                                          width: 150,
-                                          child: Text(
-                                            productList[index]
-                                                .productData
-                                                .productName,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
-                                            overflow: TextOverflow.fade,
-                                            softWrap: false,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        SizedBox(width: 8),
-                                        Text(
-                                          "\u20B9" +
-                                              (int.parse(productList[index]
-                                                          .productData
-                                                          .productMrp) -
-                                                      ((productList[0]
-                                                                  .productData
-                                                                  .productOffPercentage /
-                                                              100) *
-                                                          int.parse(
-                                                              productList[index]
-                                                                  .productData
-                                                                  .productMrp)))
-                                                  .toString(),
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(width: 12),
-                                        Text(
-                                          "\u20B9" +
-                                              productList[index]
-                                                  .productData
-                                                  .productMrp,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              fontSize: 12),
-                                        ),
-                                        SizedBox(width: 12),
-                                        Text(
-                                          productList[index]
-                                                  .productData
-                                                  .productOffPercentage
-                                                  .toString() +
-                                              "%" +
-                                              " off",
-                                          style: TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 12,
-                                              fontStyle: FontStyle.italic),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        SizedBox(width: 8),
-                                        Text(
-                                          productList[index]
-                                              .productData
-                                              .productBrand,
-                                          style: TextStyle(color: Colors.black),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(width: 5),
+                                    )
                                   ],
                                 ),
                               ),

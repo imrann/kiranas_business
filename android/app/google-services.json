@@ -7,6 +7,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:155865851863:android:c935ee2756b00cb5c4cd92",
+        "android_client_info": {
+          "package_name": "com.snipin.kiranas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155865851863-2bojnrspv4jpl5fkk7nsf25i3f0679o3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.snipin.kiranas",
+            "certificate_hash": "90ea1c412b57d9bf9d0ab4ffe3d8a61a355f8e72"
+          }
+        },
+        {
+          "client_id": "155865851863-0h8brm5eav66o975jig97ca468su7efq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARQ0f89GPZ5WTEZNL5nTtugsfWkaAbqn0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155865851863-0h8brm5eav66o975jig97ca468su7efq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:155865851863:android:bf5fad86ff4daa1bc4cd92",
         "android_client_info": {
           "package_name": "com.snipin.kirnas_business"
@@ -14,11 +51,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "155865851863-c0lsu2h5lstt4dhtljv9ltmhlno073b8.apps.googleusercontent.com",
+          "client_id": "155865851863-i4ugg7drt2o05s987hqhkbn7b6nc1gq1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.snipin.kirnas_business",
-            "certificate_hash": "b155de5bd4c751c6540394d0df37e93e22164a73"
+            "certificate_hash": "ebd44d301353018c3f42309e2e29f03dfcce66a2"
           }
         },
         {
