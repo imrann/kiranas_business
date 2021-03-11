@@ -65,7 +65,7 @@ class ProductService {
 
   Future<dynamic> getFilterListByName(String filterName) async {
     final String getFilterListByNameApi =
-        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/products//getAllproductCategory/$filterName";
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/products/getAllproductCategory/$filterName";
 
     Map<String, String> headers = {
       'Content-type': 'application/json',

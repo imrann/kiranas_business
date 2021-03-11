@@ -694,8 +694,7 @@ class _LoginState extends State<Login> {
                   validator: _userNameValidator,
                   controller: _userNameController,
                   //  enabled: !lreadonlyForm,
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 20),
+                  style: TextStyle(color: Colors.pink[900], fontSize: 20),
                   decoration: InputDecoration(
                       labelText: "Enter User Name",
                       labelStyle: TextStyle(color: Colors.grey, fontSize: 15)),

@@ -450,7 +450,7 @@ class _HomeState extends State<Home> {
                                                                     index]
                                                                 .productData
                                                                 .productMrp) -
-                                                            ((productList[0]
+                                                            ((productList[index]
                                                                         .productData
                                                                         .productOffPercentage /
                                                                     100) *
