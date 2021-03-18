@@ -23,6 +23,9 @@ final DateFormat formatForEstTime = new DateFormat("dd-MM-yyyy");
 Future<dynamic> openOrdersList;
 
 class OpenOrders extends StatefulWidget {
+  final TabController tabController;
+
+  OpenOrders({this.tabController});
   @override
   _OpenOrdersState createState() => _OpenOrdersState();
 }
@@ -58,6 +61,16 @@ class _OpenOrdersState extends State<OpenOrders> {
           Provider.of<OrdersListState>(context, listen: false);
       ordersListState.setOrdersListState(value);
     });
+  }
+
+  Future<bool> getTotalOpenOrders() async {
+    dynamic totalOrdersLength;
+
+    totalOrdersLength = await OrderController().getTotalOrdersByType("Open");
+
+    var ordersListState = Provider.of<OrdersListState>(context, listen: false);
+    ordersListState.setTotalOrdersLength(totalOrdersLength);
+    return true;
   }
 
   getPaginatedOrdersOnlyByType() {
@@ -746,20 +759,26 @@ class _OpenOrdersState extends State<OpenOrders> {
           if (isActionSuccessfull == "true") {
             openOrdersList = OrderController().getOrdersOnlyByType("Open");
 
-            openOrdersList.then((value) {
+            openOrdersList.then((value) async {
               var ordersListState =
                   Provider.of<OrdersListState>(context, listen: false);
               ordersListState.setOrdersListState(value);
-              progressDialog.hide().then((isHidden) {
-                if (orderListState.orderData.oTrackingStatus == "Placed") {
-                  Navigator.of(context).pop();
-                }
 
-                Fluttertoast.showToast(
-                    msg: "Action Successfull!!",
-                    fontSize: 10,
-                    backgroundColor: Colors.black);
-              });
+              Fluttertoast.showToast(
+                  msg: "Action Successfull!!",
+                  fontSize: 10,
+                  backgroundColor: Colors.black);
+              if (item['buttonLabel'] == "CANCEL ORDER") {
+                await getTotalOpenOrders();
+                widget.tabController.animateTo(widget.tabController.index += 2);
+              } else if (item['buttonLabel'] == "ORDER DELIVERED") {
+                await getTotalOpenOrders();
+                widget.tabController.animateTo(widget.tabController.index += 1);
+              } else if (item['buttonLabel'] == "ACCEPT ORDER") {
+                print(widget.tabController.index);
+                Navigator.of(context).pop(true);
+              }
+              progressDialog.hide();
             });
           }
         }).catchError((err) {

@@ -26,61 +26,28 @@ void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
   ));
-  FirebaseAuth.instance.currentUser().then((currentUser) => {
-        UserDetailsSP().getUserDetails().then((value) {
-          Future.delayed(Duration(seconds: 2), () {
-            if (currentUser != null) {
-              currentUser.getIdToken().then((token) {
-                print(token.toString());
-
-                LoginController()
-                    .isUserAdmin(value["userPhone"])
-                    .then((isUserAdmin) {
-                  if (isUserAdmin == "true") {
-                    runApp(MyApp("HomePage", value["userName"],
-                        value["userPhone"], value["userId"]));
-                  } else {
-                    runApp(MyApp("NoAdminScreen", value["userName"],
-                        value["userPhone"], value["userId"]));
-                  }
-                });
-              });
-            } else {
-              runApp(MyApp("LoginPage", value["userName"], value["userPhone"],
-                  value["userId"]));
-            }
-          });
-        })
-      });
-  runApp(MyApp("SplashScreen", "No User", "No Number", "No uID"));
+  runApp(MyApp());
 }
 
-Map<int, Color> color = {
-  50: Color.fromRGBO(136, 14, 79, .1),
-  100: Color.fromRGBO(136, 14, 79, .2),
-  200: Color.fromRGBO(136, 14, 79, .3),
-  300: Color.fromRGBO(136, 14, 79, .4),
-  400: Color.fromRGBO(136, 14, 79, .5),
-  500: Color.fromRGBO(136, 14, 79, .6),
-  600: Color.fromRGBO(136, 14, 79, .7),
-  700: Color.fromRGBO(136, 14, 79, .8),
-  800: Color.fromRGBO(136, 14, 79, .9),
-  900: Color.fromRGBO(136, 14, 79, 1),
-};
-MaterialColor colorCustom = MaterialColor(0xFFffffff, color);
-MaterialColor colorCustom1 = MaterialColor(0xFFf48fb1, color);
-
 class MyApp extends StatelessWidget {
-  MyApp(this.redirect, this.userName, this.phone, this.userID);
-
-  final String redirect;
-  final String userName;
-  final String phone;
-  final String userID;
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Map<int, Color> color = {
+      50: Color.fromRGBO(136, 14, 79, .1),
+      100: Color.fromRGBO(136, 14, 79, .2),
+      200: Color.fromRGBO(136, 14, 79, .3),
+      300: Color.fromRGBO(136, 14, 79, .4),
+      400: Color.fromRGBO(136, 14, 79, .5),
+      500: Color.fromRGBO(136, 14, 79, .6),
+      600: Color.fromRGBO(136, 14, 79, .7),
+      700: Color.fromRGBO(136, 14, 79, .8),
+      800: Color.fromRGBO(136, 14, 79, .9),
+      900: Color.fromRGBO(136, 14, 79, 1),
+    };
+    MaterialColor colorCustom = MaterialColor(0xFFffffff, color);
+    MaterialColor colorCustom1 = MaterialColor(0xFFf48fb1, color);
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => ProductListState()),
@@ -108,47 +75,14 @@ class MyApp extends StatelessWidget {
           //   '/ProductDetails': (context) => ProductDetails(),
           //   '/Splash': (context) => Splash(),
           // },
-          title: 'Flutter Demo',
+          title: 'Braded Baniya Business',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: colorCustom,
             accentColor: colorCustom1,
-
-            ///C2185B
-            // primaryColor: colorCustom,
-            // // buttonColor: Colors.teal,
-            // backgroundColor: colorCustom1,
-            // // //put primaryColorLight..wher ever u encounters backgroundcolor
-            // primaryColorLight: colorCustom1,
-            // primaryColorDark: Colors.black,
-            // splashColor: Colors.white,
-            // highlightColor: Colors.grey[500],
-            // // cardColor: Colors.orangeAccent[400],
-            // errorColor: Colors.red,
-            // cursorColor: Colors.white
-
-            // canvasColor: colorCustom,
           ),
-          home: _getStartupScreens(redirect, context),
+
+          initialRoute: "/",
         ));
-  }
-
-  Widget _getStartupScreens(String redirectPage, BuildContext context) {
-    print(redirectPage);
-    if (redirectPage == "NoAdminScreen") {
-      return NoAdminScreen();
-    } else if (redirectPage == "LoginPage") {
-      return Login();
-    } else if (redirectPage == "HomePage") {
-      return Home(
-        user: userName.toString(),
-        phone: phone.toString(),
-        userID: userID.toString(),
-      );
-    } else if (redirectPage == "SplashScreen") {
-      return Splash();
-    }
-
-    return Maintainance();
   }
 }

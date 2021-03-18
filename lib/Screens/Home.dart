@@ -4,13 +4,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kirnas_business/CommonScreens/ErrorPage.dart';
 import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
-import 'package:kirnas_business/CommonScreens/SlideRightRoute.dart';
 import 'package:kirnas_business/Controllers/LoginController.dart';
 import 'package:kirnas_business/Controllers/OrderController.dart';
 import 'package:kirnas_business/Controllers/ProductController.dart';
 import 'package:kirnas_business/Podo/Product.dart';
 import 'package:kirnas_business/Screens/OpenOrders.dart';
-import 'package:kirnas_business/Screens/TransactionScreen.dart';
 import 'package:kirnas_business/Screens/Orders.dart';
 import 'package:kirnas_business/Screens/ProductDetails.dart';
 import 'package:kirnas_business/CommonScreens/AppBarCommon.dart';
@@ -26,6 +24,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'DrawerNav.dart';
 
 Future<dynamic> productList;
+Future<dynamic> totalOrdersLength;
 
 FloatingActionButtonLocation fab = FloatingActionButtonLocation.centerFloat;
 FloatingActionButtonLocation miniFab = FloatingActionButtonLocation.centerFloat;
@@ -70,6 +69,7 @@ class _HomeState extends State<Home> {
     });
 
     super.initState();
+    getOpenOrdersChunk();
     openOrdersList = OrderController().getOrdersOnlyByType("Open");
     openOrdersList.then((value) {
       var ordersListState =
@@ -102,21 +102,19 @@ class _HomeState extends State<Home> {
         onSelectNotification: onSelectNotification);
   }
 
-  Future onSelectNotification(String payload) {
-    // return Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-    //   return Orders(initialTabIndex: payload);
-    // }
-    // ));
-    return Navigator.pushNamedAndRemoveUntil(
-        context, '/Orders', ModalRoute.withName('/'),
-        arguments: Orders(initialTabIndex: payload));
+  getOpenOrdersChunk() {
+    totalOrdersLength = OrderController().getTotalOrdersByType("Open");
 
-    // return Navigator.pushAndRemoveUntil(
-    //     context,
-    //     SlideRightRoute(
-    //         widget: Orders(initialTabIndex: payload),
-    //         slideAction: "horizontal"),
-    //     ModalRoute.withName('/'));
+    totalOrdersLength.then((openOrderslength) {
+      var ordersListState =
+          Provider.of<OrdersListState>(context, listen: false);
+      ordersListState.setTotalOrdersLength(openOrderslength);
+    });
+  }
+
+  Future onSelectNotification(String payload) {
+    return Navigator.pushNamed(context, '/Orders',
+        arguments: Orders(initialTabIndex: payload));
   }
 
   showNotification(
@@ -144,34 +142,15 @@ class _HomeState extends State<Home> {
       print('on resume $message');
 
       if (message["data"]["screen"] == "OrdersPage") {
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/Orders', ModalRoute.withName('/'),
+        Navigator.pushNamed(context, '/Orders',
             arguments: Orders(initialTabIndex: message["data"]["message"]));
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     SlideRightRoute(
-        //         widget: Orders(
-        //           initialTabIndex: message["data"]["message"],
-        //         ),
-        //         slideAction: "horizontal"),
-        //     ModalRoute.withName('/Home'));
       }
-      // setState(() => _message = message["notification"]["title"]);
     }, onLaunch: (Map<String, dynamic> message) async {
       print('on launch $message');
       if (message["data"]["screen"] == "OrdersPage") {
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/Orders', ModalRoute.withName('/'),
+        Navigator.pushNamed(context, '/Orders',
             arguments: Orders(initialTabIndex: message["data"]["message"]));
-        // Navigator.push(
-        //     context,
-        //     SlideRightRoute(
-        //         widget: Orders(
-        //           initialTabIndex: message["data"]["message"],
-        //         ),
-        //         slideAction: "horizontal"));
       }
-      // setState(() => _message = message["notification"]["title"]);
     });
   }
 
@@ -240,11 +219,7 @@ class _HomeState extends State<Home> {
         searchOwner: "ProductSearch",
       ),
       drawer: Drawer(
-        child: DrawerNav(
-          phoneNo: widget.phone,
-          userName: widget.user,
-          userRole: "User",
-        ),
+        child: DrawerNav(),
       ),
       body: WillPopScope(
           onWillPop: _onBackPressed,
@@ -589,7 +564,7 @@ class _HomeState extends State<Home> {
                     child: Consumer<OrdersListState>(
                         builder: (context, data, child) {
                       return Text(
-                        data.getOrdersListState().length.toString(),
+                        data.getTotalOrdersLength().toString(),
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 10,
@@ -643,6 +618,15 @@ class _HomeState extends State<Home> {
           Provider.of<OrdersListState>(context, listen: false);
       ordersListState.setOrdersListState(value);
     });
+
+    totalOrdersLength = OrderController().getTotalOrdersByType("Open");
+
+    totalOrdersLength.then((openOrderslength) {
+      var ordersListState =
+          Provider.of<OrdersListState>(context, listen: false);
+      ordersListState.setTotalOrdersLength(openOrderslength);
+    });
+
     productList = ProductController().getProductList();
     return productList.then((value) {
       var productState = Provider.of<ProductListState>(context, listen: false);

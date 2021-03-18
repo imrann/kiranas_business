@@ -72,13 +72,8 @@ class _LoginState extends State<Login> {
                         if (isUserAdmin == "true") {
                           progressDialogotp.hide().then((isHidden) {
                             if (isHidden) {
-                              Navigator.pushNamedAndRemoveUntil(context,
-                                  '/Home', ModalRoute.withName('/Home'),
-                                  arguments: Home(
-                                    user: value["userName"],
-                                    phone: value["userPhone"],
-                                    userID: value["userId"],
-                                  ));
+                              Navigator.pushNamed(context, '/Home',
+                                  arguments: Home());
                               // Navigator.pushNamed(context, '/',
                               //     arguments: Home(
                               //       user: value["userName"],
@@ -440,12 +435,7 @@ class _LoginState extends State<Login> {
               progressDialogotp.hide().then((isHidden) {
                 if (isHidden) {
                   Navigator.of(context).pop();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/Home', ModalRoute.withName('/Home'),
-                      arguments: Home(
-                        user: _userNameController.text,
-                        phone: "+91" + _phoneController.text,
-                      ));
+                  Navigator.pushNamed(context, '/Home', arguments: Home());
                   // Navigator.pushNamed(context, '/',
                   //     arguments: Home(
                   //       user: _userNameController.text,
@@ -522,6 +512,7 @@ class _LoginState extends State<Login> {
 
       AuthResult result =
           await _auth.signInWithCredential(credential).catchError((err) {
+        progressDialogotp.hide();
         print('Caught $err');
         errorController1
             .add(ErrorAnimationType.shake); // Triggering error shake animation
@@ -539,28 +530,24 @@ class _LoginState extends State<Login> {
             msg: "Login Successfull",
             fontSize: 10,
             backgroundColor: Colors.black);
-        Navigator.of(context).pop();
+
         if (result.additionalUserInfo.isNewUser) {
+          Navigator.of(context).pop();
           bottomSlider(isOtpSlider: false, userIdToken: token);
         } else {
-          LoginController().getUserByID(token).then((value) {
-            progressDialogotp.hide().then((isHidden) {
-              if (isHidden) {
-                if (value != null) {
-                  print(value["userName"]);
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/', ModalRoute.withName('/'),
-                      arguments: Home(
-                        user: value["userName"],
-                        phone: value["userPhone"],
-                        userID: value["userId"],
-                      ));
-                  // Navigator.pushNamed(context, '/',
-                  //     arguments: Home(
-                  //       user: value["userName"],
-                  //       phone: value["userPhone"],
-                  //       userID: value["userId"],
-                  //     ));
+          LoginController().getUserByID(token).then((value) async {
+            if (value != null) {
+              if (value['userAddress']['address'].toString().isEmpty ||
+                  value['userAddress']['address'].toString() == null ||
+                  value['userAddress']['address'].toString().trim() == "") {
+                await UserDetailsSP().setIsAddressPresent(false);
+              } else {
+                await UserDetailsSP().setIsAddressPresent(true);
+              }
+              progressDialogotp.hide().then((isHidden) {
+                if (isHidden) {
+                  Navigator.pushNamed(context, '/Home', arguments: Home());
+
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(
@@ -573,17 +560,9 @@ class _LoginState extends State<Login> {
                       msg: "Welcome Back!",
                       fontSize: 10,
                       backgroundColor: Colors.black);
-                } else {
-                  Navigator.pushNamed(context, '/Login');
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => Login()));
-                  Fluttertoast.showToast(
-                      msg: "Something went wrong! please try later",
-                      fontSize: 10,
-                      backgroundColor: Colors.black);
                 }
-              }
-            });
+              });
+            }
           }).catchError((err) {
             progressDialogotp.hide();
             Fluttertoast.showToast(

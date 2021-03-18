@@ -11,6 +11,12 @@ var formatter = DateFormat("dd-MM-yyyy");
 String formattedTodayDate = formatter.format(now);
 
 class OrderController {
+  Future<dynamic> getTotalOrdersByType(String type) async {
+    var ordersLength = await OrderService().getTotalOrdersByType(type);
+
+    return ordersLength;
+  }
+
   Future<dynamic> getOrdersByType(String type) async {
     Map userDetails = await UserDetailsSP().getUserDetails();
 

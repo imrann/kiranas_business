@@ -3,6 +3,7 @@ import 'package:kirnas_business/Screens/Login.dart';
 import 'package:kirnas_business/Screens/Home.dart';
 import 'package:kirnas_business/Screens/Orders.dart';
 import 'package:kirnas_business/CustomWidgets/AddProduct.dart';
+import 'package:kirnas_business/Screens/Splash.dart';
 import 'package:kirnas_business/Screens/TransactionScreen.dart';
 import 'package:kirnas_business/Screens/ProductDetails.dart';
 import 'package:kirnas_business/Screens/NoAdminScreen.dart';
@@ -14,28 +15,17 @@ class RouterGenerator {
     // final args = settings.arguments;
 
     switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(builder: (context) => Splash());
       case '/Login':
         return MaterialPageRoute(builder: (_) => Login());
       case '/Home':
         final Home args = settings.arguments;
 
         return MaterialPageRoute(
-          builder: (_) => Home(
-            phone: args.phone,
-            user: args.user,
-            userID: args.userID,
-          ),
+          builder: (_) => Home(),
         );
-      case '/':
-        final Home args = settings.arguments;
 
-        return MaterialPageRoute(
-          builder: (_) => Home(
-            phone: args.phone,
-            user: args.user,
-            userID: args.userID,
-          ),
-        );
       case '/Orders':
         final Orders args = settings.arguments;
 

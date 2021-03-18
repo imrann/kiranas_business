@@ -15,11 +15,24 @@ class Orders extends StatefulWidget {
   _OrdersState createState() => _OrdersState();
 }
 
-class _OrdersState extends State<Orders> {
+class _OrdersState extends State<Orders> with SingleTickerProviderStateMixin {
+  TabController _tabController;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
+
+    _tabController = TabController(
+        length: 3,
+        initialIndex: int.parse(widget.initialTabIndex),
+        vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<bool> _onBackPressed() {
@@ -56,12 +69,16 @@ class _OrdersState extends State<Orders> {
           notificationCount: Text("i"),
           isTabBar: true,
           searchOwner: "OrdersSearch",
+          tabController: _tabController,
         ),
         body: WillPopScope(
           onWillPop: _onBackPressed,
           child: TabBarView(
+            controller: _tabController,
             children: [
-              new OpenOrders(),
+              new OpenOrders(
+                tabController: _tabController,
+              ),
               new DeliveredOrders(),
               new CancelledOrders()
               // DeliveredOrders(),

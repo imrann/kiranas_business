@@ -176,4 +176,30 @@ class OrderService {
       CustomException().returnResponse(connection: false);
     } finally {}
   }
+
+  Future<dynamic> getTotalOrdersByType(String type) async {
+    final String getTotalOrdersByTypeApi =
+        "https://us-central1-kiranas-c082f.cloudfunctions.net/kiranas/api/orders/getTotalOrdersByType/$type";
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+    };
+
+    try {
+      http.Response res =
+          await http.get(getTotalOrdersByTypeApi, headers: headers);
+      if (res.statusCode == 200 &&
+          jsonDecode(res.body)['message']
+              .toString()
+              .contains("getTotalOrdersByType")) {
+        var data = jsonDecode(res.body)['ordersLength'];
+
+        return data;
+      } else {
+        CustomException().returnResponse(response: res, connection: true);
+      }
+    } on SocketException {
+      CustomException().returnResponse(connection: false);
+    } finally {}
+  }
 }

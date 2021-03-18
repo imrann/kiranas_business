@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kirnas_business/CommonScreens/FancyLoader.dart';
 import 'package:kirnas_business/SharedPref/UserDetailsSP.dart';
 
 import 'DrawerTiles.dart';
