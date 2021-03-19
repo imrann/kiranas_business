@@ -37,6 +37,13 @@
             {
               "client_id": "155865851863-0h8brm5eav66o975jig97ca468su7efq.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "155865851863-06tcthj95gdmjt41u1f1inpvro5haqui.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.snipin.kiranas"
+              }
             }
           ]
         }
@@ -74,6 +81,13 @@
             {
               "client_id": "155865851863-0h8brm5eav66o975jig97ca468su7efq.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "155865851863-06tcthj95gdmjt41u1f1inpvro5haqui.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.snipin.kiranas"
+              }
             }
           ]
         }
