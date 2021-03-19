@@ -148,7 +148,7 @@ class _AddProductState extends State<AddProduct> {
             labelText: "Product Image",
           ),
           "keyboardType": TextInputType.multiline,
-          "initialvalue": widget.isUpdateProduct
+          "initialvalue": (widget.isUpdateProduct && uploadedFile == null)
               ? widget.prouctDetail.productData.productImageName
               : uploadedFile == null
                   ? null

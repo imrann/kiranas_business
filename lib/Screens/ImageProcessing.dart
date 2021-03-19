@@ -22,7 +22,7 @@ class ImageProcessing extends StatefulWidget {
 
 class _ImageProcessingState extends State<ImageProcessing> {
   File uplaodfinalImage;
-  String showImageFile = "";
+  File showImageFile;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   /// Cropper plugin
@@ -57,7 +57,7 @@ class _ImageProcessingState extends State<ImageProcessing> {
             toolbarTitle: 'CROP IMAGE'));
 
     //  cropped != null ? capturedImageFile(cropped.path) : capturedImageFile("");
-    capturedImageFile(cropped.path);
+    capturedImageFile(cropped);
     setState(() {
       uplaodfinalImage = cropped;
     });
@@ -65,7 +65,7 @@ class _ImageProcessingState extends State<ImageProcessing> {
 
   /// Remove image
   void _clear() {
-    setState(() => showImageFile = "");
+    setState(() => showImageFile = null);
   }
 
   @override
@@ -120,12 +120,12 @@ class _ImageProcessingState extends State<ImageProcessing> {
       // Preview the image and crop it
       body: ListView(
         children: <Widget>[
-          if (showImageFile.isNotEmpty || showImageFile != "") ...[
+          if (showImageFile != null) ...[
             Container(
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    "$showImageFile",
+                  child: Image.file(
+                    showImageFile,
                     // height: _width * 0.34,
                     // width: _width,
                     alignment: Alignment.center,
