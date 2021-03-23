@@ -57,7 +57,7 @@ class _SplashState extends State<Splash> {
                         maxLines: 2,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 80.0,
+                            fontSize: 70.0,
                             fontWeight: FontWeight.w900,
                             fontStyle: FontStyle.italic),
                       ),
@@ -70,10 +70,10 @@ class _SplashState extends State<Splash> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'BUSINESS',
+                  'Everything below MRP',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 10.0,
+                      fontSize: 12.0,
                       wordSpacing: 1,
                       fontStyle: FontStyle.italic),
                 ),

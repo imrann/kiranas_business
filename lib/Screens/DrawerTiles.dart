@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
-ProgressDialog progressDialogotp;
+ProgressDialog progressDialogotpLogout;
 
 class DrawerTiles extends StatelessWidget {
   DrawerTiles({this.icon, this.title});
@@ -17,10 +17,10 @@ class DrawerTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    progressDialogotp = new ProgressDialog(context,
+    progressDialogotpLogout = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
-    progressDialogotp.style(
-        message: "Please Wait...",
+    progressDialogotpLogout.style(
+        message: "Logging Out...",
         progressWidget: CircularProgressIndicator(),
         progressWidgetAlignment: Alignment.centerRight,
         textAlign: TextAlign.center);
@@ -30,7 +30,7 @@ class DrawerTiles extends StatelessWidget {
         title: Text(title),
         onTap: () {
           if (title == "Logout") {
-            progressDialogotp.show().then((value) {
+            progressDialogotpLogout.show().then((value) {
               if (value) {
                 _signOut(context);
               }
@@ -189,7 +189,7 @@ class DrawerTiles extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     await _auth.signOut();
-    progressDialogotp.hide().then((isHidden) {
+    progressDialogotpLogout.hide().then((isHidden) {
       if (isHidden) {
         UserDetailsSP().logOutUser();
 

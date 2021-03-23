@@ -32,14 +32,14 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  ProgressDialog progressDialogProduct;
+
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<String> categoryList = new List<String>();
-  ProgressDialog progressDialog;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     categoryList = [
       "Rice",
@@ -79,8 +79,8 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController productMrpController = TextEditingController();
   TextEditingController productQtyController = TextEditingController();
   TextEditingController productUnitController = TextEditingController();
-  TextEditingController productOffPercentageController =
-      TextEditingController();
+
+  TextEditingController productOffPriceController = TextEditingController();
 
   bool _autoValidate = false;
   bool _autoValidate1 = false;
@@ -100,7 +100,7 @@ class _AddProductState extends State<AddProduct> {
     productCpController.dispose();
     productMrpController.dispose();
     productQtyController.dispose();
-    productOffPercentageController.dispose();
+    productOffPriceController.dispose();
     super.dispose();
   }
 
@@ -187,7 +187,7 @@ class _AddProductState extends State<AddProduct> {
 
   List<Map<String, dynamic>> get productPriceDetailsMap => [
         {
-          "validator": validateEmpty,
+          "validator": validateDecimalNumberFileds,
           "controller": productCpController,
           "decoration": InputDecoration(
             labelText: "Cost Price*",
@@ -198,7 +198,7 @@ class _AddProductState extends State<AddProduct> {
               : null,
         },
         {
-          "validator": validateEmpty,
+          "validator": validateDecimalNumberFileds,
           "controller": productMrpController,
           "decoration": InputDecoration(
             labelText: "MRP*",
@@ -209,12 +209,12 @@ class _AddProductState extends State<AddProduct> {
               : null,
         },
         {
-          "validator": validateEmpty,
+          "validator": validateNonDecimalNumberFileds,
           "controller": productQtyController,
           "decoration": InputDecoration(
             labelText: "Quantity",
           ),
-          "keyboardType": TextInputType.text,
+          "keyboardType": TextInputType.number,
           "initialvalue": widget.isUpdateProduct
               ? widget.prouctDetail.productData.productQty
               : null,
@@ -231,14 +231,14 @@ class _AddProductState extends State<AddProduct> {
               : null,
         },
         {
-          "validator": null,
-          "controller": productOffPercentageController,
+          "validator": validateDecimalNumberFileds,
+          "controller": productOffPriceController,
           "decoration": InputDecoration(
-            labelText: "Discount %",
+            labelText: "Discount Price",
           ),
           "keyboardType": TextInputType.number,
           "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productOffPercentage.toString()
+              ? widget.prouctDetail.productData.productOffPrice.toString()
               : null,
         },
       ];
@@ -337,9 +337,9 @@ class _AddProductState extends State<AddProduct> {
 
   @override
   Widget build(BuildContext context) {
-    progressDialog = new ProgressDialog(context,
+    progressDialogProduct = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
-    progressDialog.style(
+    progressDialogProduct.style(
         message: "It's almost done !",
         progressWidget: CircularProgressIndicator(),
         progressWidgetAlignment: Alignment.centerRight,
@@ -531,6 +531,27 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
+//Decimal number Validation
+
+  String validateDecimalNumberFileds(String value) {
+    Pattern pattern = r'^[0-9]+(\.[0-9]+)?$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'only digits are allowed';
+    else
+      return null;
+  }
+
+//nonDecimal number Validation
+  String validateNonDecimalNumberFileds(String value) {
+    Pattern pattern = r'^[0-9]*$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'only digits are allowed';
+    else
+      return null;
+  }
+
   next() {
     bool isNextStep = true;
     if (currentStep == 0) {
@@ -622,7 +643,7 @@ class _AddProductState extends State<AddProduct> {
       currentFocus.unfocus();
     }
     if (_formKey.currentState.validate() && _formKey1.currentState.validate()) {
-      progressDialog.show().then((isShown) async {
+      progressDialogProduct.show().then((isShown) async {
         if (isShown) {
           _formKey.currentState.save();
           _formKey1.currentState.save();
@@ -660,7 +681,7 @@ class _AddProductState extends State<AddProduct> {
       currentFocus.unfocus();
     }
     if (_formKey.currentState.validate() && _formKey1.currentState.validate()) {
-      progressDialog.show().then((isShown) async {
+      progressDialogProduct.show().then((isShown) async {
         if (isShown) {
           _formKey.currentState.save();
           _formKey1.currentState.save();
@@ -675,7 +696,7 @@ class _AddProductState extends State<AddProduct> {
               print("file Deleted");
               addProductImage();
             }).catchError((err) {
-              progressDialog.hide();
+              progressDialogProduct.hide();
               scaffoldKey.currentState.showSnackBar(SnackBar(
                 content: Text(
                   "something went wrong!",
@@ -713,14 +734,13 @@ class _AddProductState extends State<AddProduct> {
     await uploadTask.onComplete;
 
     storageReference.getDownloadURL().then((fileURL) {
-      print(fileURL);
       if (widget.isUpdateProduct) {
         updateProduct(fileURL, path.basename(uploadedFile.path));
       } else {
         createProduct(fileURL, path.basename(uploadedFile.path));
       }
     }).catchError((err) {
-      progressDialog.hide();
+      progressDialogProduct.hide();
       scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
           "problem adding image!",
@@ -742,7 +762,7 @@ class _AddProductState extends State<AddProduct> {
             productDescriptionController.text,
             productMrpController.text,
             productNameController.text,
-            int.parse(productOffPercentageController.text),
+            productOffPriceController.text,
             productQtyController.text,
             productUnitController.text,
             productNetWeightController.text,
@@ -753,7 +773,8 @@ class _AddProductState extends State<AddProduct> {
       if (isProductUpdated == "true") {
         dynamic productList =
             await ProductController().getProductList().catchError((error) {
-          progressDialog.hide();
+          progressDialogProduct.hide();
+          print(error.toString());
           scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
               "Something went wrong",
@@ -780,9 +801,10 @@ class _AddProductState extends State<AddProduct> {
 
           Navigator.of(context).pop();
 
-          progressDialog.hide();
+          progressDialogProduct.hide();
         }).catchError((err) {
-          progressDialog.hide();
+          print(err.toString());
+          progressDialogProduct.hide();
           scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
               "something went wrong!",
@@ -804,7 +826,7 @@ class _AddProductState extends State<AddProduct> {
             productDescriptionController.text,
             productMrpController.text,
             productNameController.text,
-            int.parse(productOffPercentageController.text),
+            productOffPriceController.text,
             productQtyController.text,
             productUnitController.text,
             productNetWeightController.text,
@@ -824,9 +846,9 @@ class _AddProductState extends State<AddProduct> {
 
           Navigator.of(context).pop();
 
-          progressDialog.hide();
+          progressDialogProduct.hide();
         }).catchError((err) {
-          progressDialog.hide();
+          progressDialogProduct.hide();
           scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
               "Something went wrong!",
@@ -836,6 +858,16 @@ class _AddProductState extends State<AddProduct> {
           ));
         });
       }
+    }).catchError((err) {
+      progressDialogProduct.hide();
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          "Something went wrong!",
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 5),
+      ));
     });
+    ;
   }
 }

@@ -48,8 +48,6 @@ class AppBarCommon extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppBarCommonState extends State<AppBarCommon> {
-  ProgressDialog progressDialogotp;
-
   @override
   void initState() {
     super.initState();
@@ -58,13 +56,6 @@ class _AppBarCommonState extends State<AppBarCommon> {
 
   @override
   Widget build(BuildContext context) {
-    progressDialogotp = new ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
-    progressDialogotp.style(
-        message: " Logging Out...",
-        progressWidget: CircularProgressIndicator(),
-        progressWidgetAlignment: Alignment.centerRight,
-        textAlign: TextAlign.center);
     return AppBar(
       bottom: getTabBar(isTabBar: widget.isTabBar),
       centerTitle: widget.centerTile,
@@ -193,24 +184,25 @@ class _AppBarCommonState extends State<AppBarCommon> {
                   filter.clearAllProductFilter();
                 } else if (icon == Icons.filter_alt_outlined) {
                   filter(context, 0.90);
-                } else if (icon == Icons.logout) {
-                  final FirebaseAuth _auth = FirebaseAuth.instance;
-                  await _auth.signOut();
-                  progressDialogotp.hide().then((isHidden) {
-                    if (isHidden) {
-                      UserDetailsSP().logOutUser();
-
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        '/Login',
-                        ModalRoute.withName('/Login'),
-                      );
-
-                      // Navigator.push(
-                      //     context, MaterialPageRoute(builder: (context) => Login()));
-                    }
-                  });
                 }
+                // else if (icon == Icons.logout) {
+                //   final FirebaseAuth _auth = FirebaseAuth.instance;
+                //   await _auth.signOut();
+                //   progressDialogLogout.hide().then((isHidden) {
+                //     if (isHidden) {
+                //       UserDetailsSP().logOutUser();
+
+                //       Navigator.pushNamedAndRemoveUntil(
+                //         context,
+                //         '/Login',
+                //         ModalRoute.withName('/Login'),
+                //       );
+
+                //       // Navigator.push(
+                //       //     context, MaterialPageRoute(builder: (context) => Login()));
+                //     }
+                //   });
+                // }
                 //  else if (icon == Icons.search) {
                 //   print("calender");
                 //   showDatePicker(

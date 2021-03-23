@@ -41,15 +41,14 @@ class _ImageProcessingState extends State<ImageProcessing> {
 
     File cropped = await ImageCropper.cropImage(
         sourcePath: selected.path,
-        aspectRatioPresets: const [CropAspectRatioPreset.square],
+        aspectRatioPresets: const [CropAspectRatioPreset.original],
         compressQuality: 100,
-        maxHeight: 300,
-        maxWidth: 500,
+
         // ratioX: 1.0,
         // ratioY: 1.0,
         // maxWidth: 512,
         // maxHeight: 512,
-        cropStyle: CropStyle.circle,
+        cropStyle: CropStyle.rectangle,
         compressFormat: ImageCompressFormat.jpg,
         androidUiSettings: AndroidUiSettings(
             toolbarColor: Colors.black,

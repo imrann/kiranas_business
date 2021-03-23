@@ -568,16 +568,11 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                       "\u20B9 " +
                           (int.parse(orderListState
                                       .orderData.oProducts[index].productQty) *
-                                  (int.parse(orderListState.orderData
+                                  (double.parse(orderListState.orderData
                                           .oProducts[index].productMrp) -
-                                      ((orderListState
-                                                  .orderData
-                                                  .oProducts[index]
-                                                  .productOffPercentage /
-                                              100) *
-                                          int.parse(orderListState.orderData
-                                              .oProducts[index].productMrp))))
-                              .toString(),
+                                      double.parse(orderListState.orderData
+                                          .oProducts[index].productOffPrice)))
+                              .toStringAsFixed(2),
                       style: TextStyle(
                           color: Colors.grey,
                           fontWeight: FontWeight.normal,

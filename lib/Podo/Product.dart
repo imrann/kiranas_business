@@ -28,7 +28,8 @@ class ProductData {
   String updateDate;
   String productUrl;
   String productName;
-  int productOffPercentage;
+  dynamic productOffPercentage;
+  String productOffPrice;
   String productCategory;
   String productBrand;
   String productNetWeight;
@@ -47,6 +48,7 @@ class ProductData {
       this.productUrl,
       this.productName,
       this.productOffPercentage,
+      this.productOffPrice,
       this.productCategory,
       this.productBrand,
       this.productNetWeight,
@@ -66,6 +68,7 @@ class ProductData {
       productUrl: parsedJson['productUrl'],
       productName: parsedJson['productName'],
       productOffPercentage: parsedJson['productOffPercentage'],
+      productOffPrice: parsedJson['productOffPrice'],
       productCategory: parsedJson['productCategory'],
       productBrand: parsedJson['productBrand'],
       productNetWeight: parsedJson['productNetWeight'],
@@ -87,6 +90,7 @@ class ProductData {
     data['productUrl'] = this.productUrl;
     data['productName'] = this.productName;
     data['productOffPercentage'] = this.productOffPercentage;
+    data['productOffPrice'] = this.productOffPrice;
     data['productCategory'] = this.productCategory;
     data['productBrand'] = this.productBrand;
     data['productNetWeight'] = this.productNetWeight;

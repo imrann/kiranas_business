@@ -383,11 +383,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   ),
                                   SizedBox(width: 12),
                                   Text(
-                                    productList[0]
+                                    "\u20B9" +
+                                        productList[0]
                                             .productData
-                                            .productOffPercentage
+                                            .productOffPrice
                                             .toString() +
-                                        "%" +
                                         " off",
                                     style: TextStyle(
                                         color: Colors.red,
@@ -408,17 +408,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         color: Colors.green[500], fontSize: 25),
                                   ),
                                   Text(
-                                    (int.parse(productList[0]
+                                    (double.parse(productList[0]
                                                 .productData
                                                 .productMrp) -
-                                            ((productList[0]
-                                                        .productData
-                                                        .productOffPercentage /
-                                                    100) *
-                                                int.parse(productList[0]
-                                                    .productData
-                                                    .productMrp)))
-                                        .toString(),
+                                            double.parse(productList[0]
+                                                .productData
+                                                .productOffPrice))
+                                        .toStringAsFixed(2),
                                     style: TextStyle(
                                         color: Colors.green[500], fontSize: 50),
                                   ),
