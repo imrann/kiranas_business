@@ -315,8 +315,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                       child: FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        fit: BoxFit.fill,
+                        // height: MediaQuery.of(context).size.height * 0.6,
+                        fit: BoxFit.contain,
                         width: double.infinity,
                         alignment: Alignment.center,
                         image: productList[0].productData.productUrl,
@@ -349,15 +349,21 @@ class _ProductDetailsState extends State<ProductDetails> {
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    productList[0].productData.productBrand,
-                                    style: TextStyle(color: Colors.grey),
-                                  )
-                                ],
-                              ),
+                              productList[0].productData.productBrand.trim() ==
+                                      ""
+                                  ? SizedBox(width: 0)
+                                  : Row(
+                                      children: [
+                                        Text(
+                                          productList[0]
+                                              .productData
+                                              .productBrand,
+                                          style: TextStyle(color: Colors.grey),
+                                        )
+                                      ],
+                                    ),
                               Row(
                                 children: [
                                   Text(
@@ -374,16 +380,27 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Row(
                                 children: [
                                   Text(
-                                    "\u20B9" +
+                                    "MRP : ",
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 14),
+                                  ),
+                                  Text(
+                                    "\u20B9 " +
                                         productList[0].productData.productMrp,
                                     style: TextStyle(
-                                        color: Colors.grey,
+                                        color: Colors.black,
                                         decoration: TextDecoration.lineThrough,
-                                        fontSize: 15),
+                                        fontSize: 14),
                                   ),
                                   SizedBox(width: 12),
+                                ],
+                              ),
+                              SizedBox(height: 3),
+                              Row(
+                                children: [
                                   Text(
-                                    "\u20B9" +
+                                    "Discount : "
+                                            "\u20B9 " +
                                         productList[0]
                                             .productData
                                             .productOffPrice
@@ -391,7 +408,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         " off",
                                     style: TextStyle(
                                         color: Colors.red,
-                                        fontSize: 15,
+                                        fontSize: 12,
                                         fontStyle: FontStyle.italic),
                                   ),
                                 ],
@@ -399,7 +416,20 @@ class _ProductDetailsState extends State<ProductDetails> {
                             ],
                           ),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text("Final Price :",
+                                      style: TextStyle(
+                                          color: Colors.green[500],
+                                          fontSize: 10))
+                                ],
+                              ),
                               Row(
                                 children: [
                                   Text(

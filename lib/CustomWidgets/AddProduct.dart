@@ -60,6 +60,25 @@ class _AddProductState extends State<AddProduct> {
       categoryList.clear();
       categoryList.addAll(value);
     });
+    if (widget.isUpdateProduct) {
+      productNameController.text = widget.prouctDetail.productData.productName;
+      productDescriptionController.text =
+          widget.prouctDetail.productData.productDescription;
+      productBrandController.text =
+          widget.prouctDetail.productData.productBrand;
+      productUrlController.text =
+          widget.prouctDetail.productData.productImageName;
+      productNetWeightController.text =
+          widget.prouctDetail.productData.productNetWeight;
+      productCategoryController.text =
+          widget.prouctDetail.productData.productCategory;
+      productCpController.text = widget.prouctDetail.productData.productCp;
+      productMrpController.text = widget.prouctDetail.productData.productMrp;
+      productQtyController.text = widget.prouctDetail.productData.productQty;
+      productUnitController.text = widget.prouctDetail.productData.productUnit;
+      productOffPriceController.text =
+          widget.prouctDetail.productData.productOffPrice;
+    }
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -79,7 +98,6 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController productMrpController = TextEditingController();
   TextEditingController productQtyController = TextEditingController();
   TextEditingController productUnitController = TextEditingController();
-
   TextEditingController productOffPriceController = TextEditingController();
 
   bool _autoValidate = false;
@@ -115,20 +133,18 @@ class _AddProductState extends State<AddProduct> {
             labelText: "Product Name*",
           ),
           "keyboardType": TextInputType.text,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productName
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productNameController.text : null,
         },
         {
           "validator": null,
           "controller": productDescriptionController,
           "decoration": InputDecoration(
-            labelText: "Product Description*",
+            labelText: "Product Description",
           ),
           "keyboardType": TextInputType.multiline,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productDescription
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productDescriptionController.text : null,
         },
         {
           "validator": null,
@@ -137,9 +153,8 @@ class _AddProductState extends State<AddProduct> {
             labelText: "Product Brand",
           ),
           "keyboardType": TextInputType.text,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productBrand
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productBrandController.text : null,
         },
         {
           "validator": null,
@@ -157,21 +172,20 @@ class _AddProductState extends State<AddProduct> {
           //  uploadedFile == null ? null : path.basename(uploadedFile.path)
         },
         {
-          "validator": validateEmpty,
+          "validator": null,
           "controller": productNetWeightController,
           "decoration": InputDecoration(
             labelText: "Product NetWeight",
           ),
           "keyboardType": TextInputType.text,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productNetWeight
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productNetWeightController.text : null,
         },
         {
           "validator": validateEmpty,
           "controller": productCategoryController,
           "decoration": InputDecoration(
-            labelText: "Product Category",
+            labelText: "Product Category*",
           ),
           "keyboardType": TextInputType.text,
           "initialvalue": widget.isUpdateProduct
@@ -193,9 +207,8 @@ class _AddProductState extends State<AddProduct> {
             labelText: "Cost Price*",
           ),
           "keyboardType": TextInputType.number,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productCp
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productCpController.text : null,
         },
         {
           "validator": validateDecimalNumberFileds,
@@ -204,9 +217,8 @@ class _AddProductState extends State<AddProduct> {
             labelText: "MRP*",
           ),
           "keyboardType": TextInputType.number,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productMrp
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productMrpController.text : null,
         },
         {
           "validator": validateNonDecimalNumberFileds,
@@ -215,31 +227,28 @@ class _AddProductState extends State<AddProduct> {
             labelText: "Quantity",
           ),
           "keyboardType": TextInputType.number,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productQty
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productQtyController.text : null,
         },
         {
-          "validator": validateEmpty,
+          "validator": null,
           "controller": productUnitController,
           "decoration": InputDecoration(
               labelText: "Unit",
               hintText: "Packaging type. eg:.pac/bottle/loose etc"),
           "keyboardType": TextInputType.text,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productUnit
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productUnitController.text : null,
         },
         {
           "validator": validateDecimalNumberFileds,
           "controller": productOffPriceController,
           "decoration": InputDecoration(
-            labelText: "Discount Price",
+            labelText: "Discount Price*",
           ),
           "keyboardType": TextInputType.number,
-          "initialvalue": widget.isUpdateProduct
-              ? widget.prouctDetail.productData.productOffPrice.toString()
-              : null,
+          "initialvalue":
+              widget.isUpdateProduct ? productOffPriceController.text : null,
         },
       ];
 
@@ -260,7 +269,7 @@ class _AddProductState extends State<AddProduct> {
                 }
               });
             },
-            hint: new Text("Select " + d[i]['hintText'])));
+            hint: new Text("Select " + d[i]['hintText'] + '*')));
       } else {
         aa.add(Theme(
           data: Theme.of(context).copyWith(primaryColor: Colors.pink[900]),

@@ -57,7 +57,7 @@ class _SplashState extends State<Splash> {
                         maxLines: 2,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 70.0,
+                            fontSize: 55.0,
                             fontWeight: FontWeight.w900,
                             fontStyle: FontStyle.italic),
                       ),
